@@ -5,18 +5,12 @@
 #include <zconf.h>
 
 
+//TODO: conrtoller talks to command parser, parser parses the command then controller forwards the parsed command to TaskFacade which uses TaskFactory inside
+
+
 int main(int argc, char** argv) {
 
-    if (fork()) {
-        int a;
-        std::cin >> a;
-        std::cout << "Parent: " << a << std::endl;
-    }
-    else {
-        int a;
-        std::cin >> a;
-        std::cout << "child: "<< a << std::endl;
-    }
 
-    return 0;
+    //TODO: forwards the control to the Controller
+
 }
