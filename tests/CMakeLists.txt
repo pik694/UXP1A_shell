@@ -1,6 +1,12 @@
 
-file(GLOB_RECURSE TEST_SOURCES "*.cpp")
 
+add_subdirectory(shell/ui)
+add_subdirectory(shell/tasks)
+add_subdirectory(shell/command_parser)
+add_subdirectory(shell/model)
+
+
+file(GLOB_RECURSE TEST_SOURCES "*.cpp")
 
 add_executable(all_unit_tests ${TEST_SOURCES})
 
