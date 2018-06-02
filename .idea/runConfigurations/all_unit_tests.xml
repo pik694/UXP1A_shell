@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="all_unit_tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="uxp1a_shell" TARGET_NAME="all_unit_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="uxp1a_shell" RUN_TARGET_NAME="all_unit_tests">
+    <method />
+  </configuration>
+</component>

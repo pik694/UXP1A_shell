@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Model" type="CMakeBoostTestRunConfigurationType" factoryName="Boost Test" PASS_PARENT_ENVS_2="true" PROJECT_NAME="uxp1a_shell" TARGET_NAME="model_unit_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="uxp1a_shell" RUN_TARGET_NAME="model_unit_tests" TEST_MODE="SUITE_TEST">
+    <method />
+  </configuration>
+</component>
