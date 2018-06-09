@@ -34,4 +34,4 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         BOOST_CHECK( token.getType() == TokenType::EoF );
     }
 
-    BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()

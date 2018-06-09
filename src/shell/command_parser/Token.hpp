@@ -13,7 +13,12 @@ namespace shell::parser
     enum class TokenType: unsigned
     {
         EoF = 0,
+        Semicolon = 1,
+        Pipeline = 2,
+        Background = 3,
+        Flag = 4,
         Undefined = 69
+
     };
 
     class Token
@@ -23,11 +28,9 @@ namespace shell::parser
                 type_( type ),
                 value_( std::move( value ) ) { }
 
-        Token( const Token &other ) :
-            type_( other.type_),
-            value_( other.value_ ) { }
+        Token( const Token &other ) = default;
 
-            TokenType getType()
+        TokenType getType()
         {
             return type_;
         }
