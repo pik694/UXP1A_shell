@@ -14,8 +14,7 @@ namespace shell::ui {
 
         void getVariable();
 
-        //TODO: should implement catching SIGKILL event
-
+        //TODO: should catch SIGKILL event
 
         //TODO: should proxy all inter-modules communication
 

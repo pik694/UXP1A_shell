@@ -5,8 +5,3 @@
 #include "Parser.hpp"
 
 using namespace shell::parser;
-
-void Parser::buildTree()
-{
-
-}

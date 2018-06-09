@@ -5,17 +5,17 @@
 #ifndef UXP1A_SHELL_TASKSFACADE_HPP
 #define UXP1A_SHELL_TASKSFACADE_HPP
 
+#include <memory>
+
 namespace shell::tasks {
     class TasksFacade {
     public:
 
-
         //TODO: thread safe
-        void buildAndAddTask();
+        void buildAndAddTask(std::unique_ptr<shell::parser::ast> ast);
 
 
         void close();
-
 
     };
 }
