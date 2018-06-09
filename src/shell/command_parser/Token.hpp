@@ -23,7 +23,11 @@ namespace shell::parser
                 type_( type ),
                 value_( std::move( value ) ) { }
 
-        TokenType getType()
+        Token( const Token &other ) :
+            type_( other.type_),
+            value_( other.value_ ) { }
+
+            TokenType getType()
         {
             return type_;
         }
