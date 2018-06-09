@@ -5,15 +5,38 @@
 #ifndef UXP1A_SHELL_TOKEN_HPP
 #define UXP1A_SHELL_TOKEN_HPP
 
+#include <string>
+#include <utility>
 
-class Token {
-    enum class TokenType {
-        //TODO: token types go here
+namespace shell::parser
+{
+    enum class TokenType: unsigned
+    {
+        EoF = 0,
+        Undefined = 69
     };
 
-private:
+    class Token
+    {
+    public:
+        explicit Token( TokenType type = TokenType::Undefined, std::string value = "" ) :
+                type_( type ),
+                value_( std::move( value ) ) { }
 
-};
+        TokenType getType()
+        {
+            return type_;
+        }
 
+        std::string getValue()
+        {
+            return value_;
+        }
 
+    private:
+        TokenType type_;
+        std::string value_;
+    };
+
+}
 #endif //UXP1A_SHELL_TOKEN_HPP
