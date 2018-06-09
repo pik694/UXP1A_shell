@@ -6,6 +6,7 @@
 #define UXP1A_SHELL_TASKSFACADE_HPP
 
 #include <memory>
+#include <shell/command_parser/AbstractSyntaxTree.hpp>
 
 namespace shell::tasks {
     class TasksFacade {

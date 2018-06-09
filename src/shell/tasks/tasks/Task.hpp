@@ -7,9 +7,12 @@
 
 namespace shell::tasks {
 
-    //TODO: implement decorator pattern (pipelines, streams redirection, etc.)
     class Task {
+    public:
 
+        virtual void run() = 0;
+
+        virtual ~Task() = default;
     };
 }
 
