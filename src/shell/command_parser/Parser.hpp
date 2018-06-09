@@ -1,5 +1,5 @@
 //
-// Created by Piotr Żelazko on 02.06.2018.
+// Created by Daniel Bigos on 02.06.2018.
 //
 
 #ifndef UXP1A_SHELL_PARSER_HPP
