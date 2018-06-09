@@ -35,6 +35,16 @@ namespace shell::parser
             return type_;
         }
 
+        void setType( TokenType type )
+        {
+            type_ = type;
+        }
+
+        void setValue( std::string value )
+        {
+            value_ = value;
+        }
+
         std::string getValue()
         {
             return value_;

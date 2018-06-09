@@ -34,4 +34,14 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         BOOST_CHECK( token.getType() == TokenType::EoF );
     }
 
+    BOOST_AUTO_TEST_CASE( GivenStreamWithBackgroundSignLinesShouldReturnIt )
+    {
+        test = '&';
+
+        std::istringstream stream( test );
+        Lexer lexer( stream );
+        Token token( lexer.getNextToken() );
+        BOOST_CHECK( token.getType() == TokenType::Background );
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

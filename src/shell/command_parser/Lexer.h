@@ -52,6 +52,8 @@ namespace shell::parser
             std::istream &inputStream_;
         };
 
+        void skipWhitespaces();
+
         StreamWrapper streamWrapper_;
     };
 
