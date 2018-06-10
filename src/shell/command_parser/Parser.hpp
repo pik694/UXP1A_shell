@@ -6,6 +6,7 @@
 #define UXP1A_SHELL_PARSER_HPP
 
 #include <string>
+#include <memory>
 #include "AbstractSyntaxTree.hpp"
 
 namespace shell::parser {
