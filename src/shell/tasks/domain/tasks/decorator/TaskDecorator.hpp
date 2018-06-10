@@ -11,8 +11,8 @@
 namespace shell::tasks::decorators{
     class TaskDecorator : Task {
 
-        void run() override {
-            decoratedTask_->run();
+        pid_t run(TasksManager& manager) override {
+            decoratedTask_->run(manager);
         }
 
     private:

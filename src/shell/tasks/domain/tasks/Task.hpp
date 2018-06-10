@@ -5,12 +5,14 @@
 #ifndef UXP1A_SHELL_TASK_HPP
 #define UXP1A_SHELL_TASK_HPP
 
+#include <shell/tasks/domain/TasksManager.hpp>
+
 namespace shell::tasks {
 
     class Task {
     public:
 
-        virtual void run() = 0;
+        virtual pid_t run(TasksManager& manager) = 0;
 
         virtual ~Task() = default;
     };

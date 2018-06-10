@@ -11,10 +11,7 @@
 #include "Task.hpp"
 
 namespace shell::tasks {
-    class SimpleTask : Task {
-
-
-
+    class ChildProcess : Task {
 
     private:
         std::list<const std::string> args_;

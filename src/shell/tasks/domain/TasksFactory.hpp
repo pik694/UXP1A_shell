@@ -12,7 +12,6 @@
 namespace shell::tasks {
     class TasksFactory {
     public:
-
         std::unique_ptr<Task> build(std::unique_ptr<parser::ast> ast);
     };
 }
