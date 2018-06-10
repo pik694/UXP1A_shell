@@ -17,6 +17,17 @@ namespace shell::parser
         Pipeline = 2,
         Background = 3,
         Flag = 4,
+        ProgramExecution = 5,
+        ShellCommand = 6,
+        Assignment = 7,
+        CD_Back = 8,
+        OUT_Redirect = 9,
+        ERR_Redirect = 10,
+        IN_Redirect = 11,
+        Argument = 12,
+        SingleQuoteArg = 13,
+        DoubleQuoteArg = 14,
+        HereDocument = 15,
         Undefined = 69
 
     };
@@ -30,6 +41,12 @@ namespace shell::parser
 
         Token( const Token &other ) = default;
 
+        Token &operator=( const Token &token )
+        {
+            type_ = token.type_;
+            value_ = token.value_;
+        }
+
         TokenType getType()
         {
             return type_;
@@ -42,7 +59,7 @@ namespace shell::parser
 
         void setValue( std::string value )
         {
-            value_ = value;
+            value_ = std::move( value );
         }
 
         std::string getValue()
