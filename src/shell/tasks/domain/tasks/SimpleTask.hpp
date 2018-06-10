@@ -11,9 +11,9 @@
 #include "Task.hpp"
 
 namespace shell::tasks {
-
-
     class SimpleTask : Task {
+
+
 
 
     private:

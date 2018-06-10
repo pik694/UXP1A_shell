@@ -6,7 +6,7 @@
 #define UXP1A_SHELL_TASKDECORATOR_HPP
 
 #include <memory>
-#include <shell/tasks/tasks/Task.hpp>
+#include <shell/tasks/domain/tasks/Task.hpp>
 
 namespace shell::tasks::decorators{
     class TaskDecorator : Task {

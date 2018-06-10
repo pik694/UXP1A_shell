@@ -7,16 +7,20 @@
 
 #include <memory>
 #include <shell/command_parser/AbstractSyntaxTree.hpp>
+#include <shell/tasks/domain/TasksFactory.hpp>
+#include <shell/tasks/domain/TasksManager.hpp>
 
 namespace shell::tasks {
     class TasksFacade {
     public:
 
-        //TODO: thread safe
         void buildAndAddTask(std::unique_ptr<shell::parser::ast> ast);
 
-
         void close();
+
+    private:
+        tasks::TasksManager manager_;
+        tasks::TasksFactory factory_;
 
     };
 }
