@@ -13,13 +13,10 @@
 #include <set>
 
 namespace shell::tasks {
-    //TODO: on the diagram it is called "task runner"
     class TasksManager {
     public:
 
         TasksManager();
-
-        // TODO: should run in another thread
 
         void addTask(std::unique_ptr<Task> task);
 
@@ -27,8 +24,6 @@ namespace shell::tasks {
 
         void addBackgroundChild(pid_t child);
 
-        //TODO: blocking method that should wait until managers thread finishes
-        //TODO: manager thread kills its children (running tasks) and waits until they finish
         void close();
 
         virtual ~TasksManager();
@@ -49,7 +44,7 @@ namespace shell::tasks {
         bool childrenExited = false;
 
         std::mutex runningChildrenMutex_;
-        std::condition_variable runningChildrenCV_;
+//        std::condition_variable runningChildrenCV_; TODO: decide whether this should be removed
         std::set<pid_t> runningChildren_;
 
         std::mutex lastExitedMutex_;
