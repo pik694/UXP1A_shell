@@ -7,13 +7,23 @@
 
 #include <string>
 #include <memory>
-#include "AbstractSyntaxTree.hpp"
+#include "shell/command_parser/structures/AbstractSyntaxTree.hpp"
+#include "Lexer.h"
 
-namespace shell::parser {
-    class Parser {
+namespace shell::parser
+{
+    class Parser
+    {
+    public:
+        explicit Parser();
+        ~Parser() = default;
 
-        //TODO: gets a string command and produces a tree
-        std::unique_ptr<ast> buildTree(const std::string&);
+        std::unique_ptr< structures::ast > buildTree( const std::string& );
+
+    private:
+
+        std::unique_ptr < structures::ast > parseCommand();
+        std::unique_ptr< Lexer > lexer_;
     };
 }
 
