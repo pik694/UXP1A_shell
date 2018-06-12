@@ -1,13 +1,11 @@
-#include <iostream>
+#include <sys/stat.h>
 #include <fstream>
-#include <thread>
+#include <fcntl.h>
+#include <zconf.h>
+#include <memory>
 
-#include <unistd.h>
-#include <signal.h>
+using namespace shell::ui;
 
-//TODO: controller talks to command parser, parser parses the command then controller forwards the parsed command to TaskFacade which uses TaskFactory inside
-
-
-int main(int argc, char **argv) {
-
+int main(int argc, char** argv) {
+    Controller::getInstance().start();
 }

@@ -8,12 +8,20 @@
 
 #include <string>
 #include <boost/optional.hpp>
+#include <iostream>
 
 namespace shell::ui {
     class UserInterface {
     public:
 
-        boost::optional<std::string> getNextCommand();
+        boost::optional<std::string> getNextCommand()
+        {
+            std::string input;
+            boost::optional<std::string> command;
+            std::getline(std::cin, input);
+            command.emplace(input);
+            return command;
+        }
 
         void printError(const std::string&);
         void printLog(const std::string&);
