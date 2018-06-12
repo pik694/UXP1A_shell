@@ -7,7 +7,6 @@
 
 namespace shell::model {
     class VariablesRepository {
-
     };
 }
 
