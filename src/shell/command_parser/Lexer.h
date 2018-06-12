@@ -84,6 +84,7 @@ namespace shell::parser
                 { '\"', std::bind( &Lexer::getDoubleQuoteArgument, this ) },
                 { '\'', std::bind( &Lexer::getSingleQuoteArgument, this ) },
                 { '-', std::bind( &Lexer::getFlag, this ) },
+                { '\n', std::bind( &Lexer::getNewline, this ) }
         };
 
         std::unordered_map< std::string, TokenType > keySymbols_ = {
@@ -106,6 +107,7 @@ namespace shell::parser
         const Token getSingleQuoteArgument();
         const Token getFlag();
         const Token getCommand();
+        const Token getNewline();
     };
 
 

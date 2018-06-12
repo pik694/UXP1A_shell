@@ -25,7 +25,7 @@ const Token Lexer::getNextToken()
 
 void Lexer::skipWhitespaces()
 {
-    while( std::isspace( streamWrapper_.peekChar() ) )
+    while( std::isspace( streamWrapper_.peekChar() ) && streamWrapper_.peekChar() != '\n' )
         streamWrapper_.getChar();
 }
 
@@ -155,6 +155,13 @@ const Token Lexer::getCommand()
     else
         token.setValue( token_value );
     return token;
+}
+
+const Token Lexer::getNewline()
+{
+    streamWrapper_.getChar();
+
+    return Token( TokenType::Newline );
 }
 
 LexerException::LexerException( const std::string &msg ) : runtime_error( msg ) { }

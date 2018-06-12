@@ -25,13 +25,11 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
     BOOST_AUTO_TEST_CASE( GivenStreamWithSomeEmptyLinesShouldReturnEoFToken )
     {
         test = "\n";
-        test += "\n";
-        test += "\n";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::EoF );
+        BOOST_CHECK( token.getType() == TokenType::Newline );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithBackgroundSignLinesShouldReturnIt )
@@ -291,7 +289,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
 
     BOOST_AUTO_TEST_CASE( GitExamlpe2 )
     {
-        test = "./proga | ./progb | ./progc &";
+        test = "./proga | ./progb | ./progc & \n";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
@@ -302,6 +300,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         expected_tokens.emplace_back( TokenType::Pipeline, "" );
         expected_tokens.emplace_back( TokenType::Command, "./progc" );
         expected_tokens.emplace_back( TokenType::Background, "" );
+        expected_tokens.emplace_back( TokenType::Newline, "" );
         expected_tokens.emplace_back( TokenType::EoF, "" );
         for( auto &token : expected_tokens )
         {

@@ -27,6 +27,7 @@ namespace shell::parser
         ERR_Append = 12,
         IN_Redirect = 13,
         Command = 14,
+        Newline = 15,
         Undefined = 69
     };
 
