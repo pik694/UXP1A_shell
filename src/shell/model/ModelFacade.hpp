@@ -13,9 +13,10 @@ namespace shell::model {
 
     class ModelFacade {
     private:
-        VariablesRepository variablesRepository;
+        VariablesRepository *variablesRepository_;
     public:
-        ModelFacade(const VariablesRepository &variablesRepository);
+        ModelFacade();
+        ~ModelFacade() {delete  variablesRepository_;}
         void setVariable(const std::string &varName, const std::string &varValues);
         void exportVariable(const std::string &varName);
         std::unique_ptr<variables::Variable> getVariable(const std::string& name);

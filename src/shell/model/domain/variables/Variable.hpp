@@ -19,7 +19,6 @@ namespace shell::model::variables {
             boost::split(values_, values,  boost::is_any_of(":"));
         }
 
-        //TODO: getters and setters
         const std::string &getName_() const {
             return name_;
         }
@@ -38,8 +37,6 @@ namespace shell::model::variables {
 
     private:
         std::string name_;
-
-        // TODO: we get a list of values separated by a separator (ex. VARIABLE=value1:value2:value3)
         std::list<std::string> values_;
         std::string valuesStr_;
     };
