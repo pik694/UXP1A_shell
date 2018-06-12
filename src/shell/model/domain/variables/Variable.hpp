@@ -28,12 +28,12 @@ namespace shell::model::variables {
             return values_;
         }
 
-        void setValues_(const std::list<std::string> &values_) {
-            Variable::values_ = values_;
+        void setValues_(const std::string &values) {
+            boost::split(values_, values,  boost::is_any_of(":"));
         }
 
     private:
-        const std::string name_;
+        std::string name_;
 
         // TODO: we get a list of values separated by a separator (ex. VARIABLE=value1:value2:value3)
         std::list<std::string> values_;
