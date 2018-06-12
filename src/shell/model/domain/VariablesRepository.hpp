@@ -13,15 +13,15 @@ namespace shell::model {
     class VariablesRepository {
     public:
         void setVariable(shell::model::variables::Variable &variable) {
-            variables[variable.getName_()] = variable;
+            variables_[variable.getName_()] = variable;
         }
 
         shell::model::variables::Variable getVariable(std::string varName) {
-            return variables[varName];
+            return variables_[varName];
         }
 
     private:
-        std::map<std::string, shell::model::variables::Variable> variables;
+        std::map<std::string, shell::model::variables::Variable> variables_;
     };
 }
 

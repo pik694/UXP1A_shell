@@ -9,11 +9,10 @@ using namespace shell::model;
 void ModelFacade::setVariable(const std::string &varName, const std::string &varValues) {
     std::unique_ptr<variables::Variable> variable(new variables::Variable(varName, varValues));
     variablesRepository.setVariable(*variable);
-
 }
 
 void ModelFacade::exportVariable(const std::string &varName) {
-
+    setenv(varName.c_str(), variablesRepository.getVariable(varName).getStringValues().c_str(), 1);
 }
 
 std::unique_ptr<variables::Variable>  ModelFacade::getVariable(const std::string &name) {

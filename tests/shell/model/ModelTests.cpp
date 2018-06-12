@@ -13,7 +13,7 @@
 BOOST_AUTO_TEST_SUITE(model_test_suite)
 
 BOOST_AUTO_TEST_CASE(construct_varaible){
-        std::unique_ptr<shell::model::variables::Variable> var = std::make_unique<shell::model::variables::Variable>("VAR", "/usr:/home/Documents:/libs");//new shell::model::variables::Variable("VAR", "/usr:/home/Documents:/libs");
+        std::unique_ptr<shell::model::variables::Variable> var = std::make_unique<shell::model::variables::Variable>("VAR", "/usr:/home/Documents:/libs");
         std::list<std::string> values;
         values.push_back("/usr");
         values.push_back("/home/Documents");
@@ -23,8 +23,8 @@ BOOST_AUTO_TEST_CASE(construct_varaible){
 }
 
 BOOST_AUTO_TEST_CASE(set_and_get_varaible_from_repo){
-    auto addedVar = new shell::model::variables::Variable("VAR", "/usr:/home/Documents:/libs");
-    auto repository = new shell::model::VariablesRepository();
+    std::unique_ptr<shell::model::variables::Variable> addedVar = std::make_unique<shell::model::variables::Variable>("VAR", "/usr:/home/Documents:/libs");
+    std::unique_ptr<shell::model::VariablesRepository> repository = std::make_unique<shell::model::VariablesRepository>();
 
     repository->setVariable(*addedVar);
     auto receivedVar = repository->getVariable(addedVar->getName_());
@@ -34,14 +34,14 @@ BOOST_AUTO_TEST_CASE(set_and_get_varaible_from_repo){
 }
 
     BOOST_AUTO_TEST_CASE(set_change_and_get_varaible_from_repo){
-        auto addedVar = new shell::model::variables::Variable("VAR", "/usr:/home/Documents:/libs");
-        auto repository = new shell::model::VariablesRepository();
+        std::unique_ptr<shell::model::variables::Variable> addedVar = std::make_unique<shell::model::variables::Variable>("VAR", "/usr:/home/Documents:/libs");
+        std::unique_ptr<shell::model::VariablesRepository> repository = std::make_unique<shell::model::VariablesRepository>();
 
         repository->setVariable(*addedVar);
         addedVar->setValues_("/usr/local/lib:/home/Downloads");
         repository->setVariable(*addedVar);
 
-        auto expectedVar = new shell::model::variables::Variable("VAR", "/usr/local/lib:/home/Downloads");
+        std::unique_ptr<shell::model::variables::Variable> expectedVar = std::make_unique<shell::model::variables::Variable>("VAR", "/usr/local/lib:/home/Downloads");
         auto receivedVar = repository->getVariable(addedVar->getName_());
 
 
@@ -49,14 +49,15 @@ BOOST_AUTO_TEST_CASE(set_and_get_varaible_from_repo){
                                       receivedVar.getValues_().begin(), receivedVar.getValues_().end());
     }
 
-    BOOST_AUTO_TEST_CASE(get_env_variable){
-    auto varRepository = new shell::model::VariablesRepository();
-    auto modelFacade = new shell::model::ModelFacade(*varRepository);
-    std::list<std::string> values;
-    auto variable = modelFacade->getVariable("HOME");
-    values.push_back("/home/marcin");
-    BOOST_CHECK_EQUAL_COLLECTIONS(values.begin(), values.end(), variable->getValues_().begin(),
-                                  variable->getValues_().end());
+    BOOST_AUTO_TEST_CASE(set_and_get_env_variable){
+    std::unique_ptr<shell::model::VariablesRepository> repository = std::make_unique<shell::model::VariablesRepository>();
+    std::unique_ptr<shell::model::ModelFacade> modelFacade = std::make_unique<shell::model::ModelFacade>(*repository);
+    std::unique_ptr<shell::model::variables::Variable> var = std::make_unique<shell::model::variables::Variable>("VAR", "/usr:/home/Documents:/libs");
+    modelFacade->setVariable("VAR", "/usr:/home/Documents:/libs");
+    modelFacade->exportVariable("VAR");
+    auto variable = modelFacade->getVariable("VAR");
+    BOOST_CHECK_EQUAL_COLLECTIONS(var->getValues_().begin(), var->getValues_().end(),
+                                  variable->getValues_().begin(), variable->getValues_().end());
 
 }
 

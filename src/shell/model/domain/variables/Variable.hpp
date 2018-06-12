@@ -15,7 +15,7 @@ namespace shell::model::variables {
     public:
         Variable() {}
 
-        Variable(const std::string &name_, const std::string values) : name_(name_) {
+        Variable(const std::string &name_, const std::string values) : name_(name_), valuesStr_(values) {
             boost::split(values_, values,  boost::is_any_of(":"));
         }
 
@@ -28,6 +28,10 @@ namespace shell::model::variables {
             return values_;
         }
 
+        const std::string &getStringValues() const {
+            return valuesStr_;
+        }
+
         void setValues_(const std::string &values) {
             boost::split(values_, values,  boost::is_any_of(":"));
         }
@@ -37,6 +41,7 @@ namespace shell::model::variables {
 
         // TODO: we get a list of values separated by a separator (ex. VARIABLE=value1:value2:value3)
         std::list<std::string> values_;
+        std::string valuesStr_;
     };
 }
 
