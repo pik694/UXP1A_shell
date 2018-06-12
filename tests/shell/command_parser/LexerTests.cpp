@@ -51,16 +51,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::CD_Back );
-    }
-
-    BOOST_AUTO_TEST_CASE( GivenStreamWithDotNotValidCommandShouldThrowLexerException )
-    {
-        test = ".,";
-
-        std::istringstream stream( test );
-        Lexer lexer( stream );
-        BOOST_CHECK_THROW( lexer.getNextToken(), LexerException );
+        BOOST_CHECK( token.getType() == TokenType::Command );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithProgCallCommandShouldReturnIt )
@@ -70,8 +61,8 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::ProgramExecution );
-        BOOST_CHECK_EQUAL( token.getValue(), "test" );
+        BOOST_CHECK( token.getType() == TokenType::Command );
+        BOOST_CHECK_EQUAL( token.getValue(), "./test" );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithSemicolonShouldReturnIt )
@@ -96,17 +87,18 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithHereDocumentShouldReturnIt )
     {
-        test = "<<";
+        test = "<<HereDocument";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
         BOOST_CHECK( token.getType() == TokenType::HereDocument );
+        BOOST_CHECK_EQUAL( token.getValue(), "HereDocument" );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithOutRedirectShouldReturnIt )
     {
-        test = ">";
+        test = "1>";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
@@ -114,15 +106,36 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         BOOST_CHECK( token.getType() == TokenType::OUT_Redirect );
     }
 
+    BOOST_AUTO_TEST_CASE( GivenStreamWithOutAppendShouldReturnIt )
+    {
+        test = "1>>";
+
+        std::istringstream stream( test );
+        Lexer lexer( stream );
+        Token token( lexer.getNextToken() );
+        BOOST_CHECK( token.getType() == TokenType::OUT_Append );
+    }
+
     BOOST_AUTO_TEST_CASE( GivenStreamWithErrRedirectShouldReturnIt )
     {
-        test = ">>";
+        test = "2>";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
         BOOST_CHECK( token.getType() == TokenType::ERR_Redirect );
     }
+
+    BOOST_AUTO_TEST_CASE( GivenStreamWithErrAppendShouldReturnIt )
+    {
+        test = "2>>";
+
+        std::istringstream stream( test );
+        Lexer lexer( stream );
+        Token token( lexer.getNextToken() );
+        BOOST_CHECK( token.getType() == TokenType::ERR_Append );
+    }
+
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithAssignmentCharShouldReturnIt )
     {
@@ -151,7 +164,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::Argument );
+        BOOST_CHECK( token.getType() == TokenType::Command );
         BOOST_CHECK_EQUAL( token.getValue(), "unix.txt_123" );
     }
 
@@ -162,7 +175,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::Argument );
+        BOOST_CHECK( token.getType() == TokenType::Command );
         BOOST_CHECK_EQUAL( token.getValue(), "/home/daniel" );
     }
 
@@ -173,7 +186,7 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::Argument );
+        BOOST_CHECK( token.getType() == TokenType::Command );
         BOOST_CHECK_EQUAL( token.getValue(), "123_test/aaa.aaa" );
     }
 
@@ -239,32 +252,32 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithBashCommandShouldReturnIt )
     {
-        test = ",/ls";
+        test = "ls";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::ShellCommand );
+        BOOST_CHECK( token.getType() == TokenType::Command );
         BOOST_CHECK_EQUAL( token.getValue(), "ls" );
     }
 
     BOOST_AUTO_TEST_CASE( GitExamlpe1 )
     {
-        test = "./program_name arg1 arg2 > out >> err < in;";
+        test = "./program_name arg1 arg2 1> out 2>> err < in ;";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
 
         std::vector< std::pair< TokenType , std::string > > expected_tokens;
-        expected_tokens.emplace_back( TokenType::ProgramExecution, "program_name" );
-        expected_tokens.emplace_back( TokenType::Argument, "arg1" );
-        expected_tokens.emplace_back( TokenType::Argument, "arg2" );
+        expected_tokens.emplace_back( TokenType::Command, "./program_name" );
+        expected_tokens.emplace_back( TokenType::Command, "arg1" );
+        expected_tokens.emplace_back( TokenType::Command, "arg2" );
         expected_tokens.emplace_back( TokenType::OUT_Redirect, "" );
-        expected_tokens.emplace_back( TokenType::Argument, "out" );
-        expected_tokens.emplace_back( TokenType::ERR_Redirect, "" );
-        expected_tokens.emplace_back( TokenType::Argument, "err" );
+        expected_tokens.emplace_back( TokenType::Command, "out" );
+        expected_tokens.emplace_back( TokenType::ERR_Append, "" );
+        expected_tokens.emplace_back( TokenType::Command, "err" );
         expected_tokens.emplace_back( TokenType::IN_Redirect, "" );
-        expected_tokens.emplace_back( TokenType::Argument, "in" );
+        expected_tokens.emplace_back( TokenType::Command, "in" );
         expected_tokens.emplace_back( TokenType::Semicolon, "" );
         expected_tokens.emplace_back( TokenType::EoF, "" );
 
@@ -283,13 +296,13 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         std::vector< std::pair< TokenType , std::string > > expected_tokens;
-        expected_tokens.emplace_back( TokenType::ProgramExecution, "proga" );
+        expected_tokens.emplace_back( TokenType::Command, "./proga" );
         expected_tokens.emplace_back( TokenType::Pipeline, "" );
-        expected_tokens.emplace_back( TokenType::ProgramExecution, "progb" );
+        expected_tokens.emplace_back( TokenType::Command, "./progb" );
         expected_tokens.emplace_back( TokenType::Pipeline, "" );
-        expected_tokens.emplace_back( TokenType::ProgramExecution, "progc" );
+        expected_tokens.emplace_back( TokenType::Command, "./progc" );
         expected_tokens.emplace_back( TokenType::Background, "" );
-
+        expected_tokens.emplace_back( TokenType::EoF, "" );
         for( auto &token : expected_tokens )
         {
             Token t( lexer.getNextToken() );

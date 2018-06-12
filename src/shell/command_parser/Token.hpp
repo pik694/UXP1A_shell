@@ -1,5 +1,5 @@
 //
-// Created by Piotr Żelazko on 02.06.2018.
+// Created by Daniel Bigos on 02.06.2018.
 //
 
 #ifndef UXP1A_SHELL_TOKEN_HPP
@@ -17,19 +17,17 @@ namespace shell::parser
         Pipeline = 2,
         Background = 3,
         Flag = 4,
-        ProgramExecution = 5,
-        ShellCommand = 6,
-        Assignment = 7,
-        CD_Back = 8,
+        Assignment = 5,
+        HereDocument = 6,
+        SingleQuoteArg = 7,
+        DoubleQuoteArg = 8,
         OUT_Redirect = 9,
-        ERR_Redirect = 10,
-        IN_Redirect = 11,
-        Argument = 12,
-        SingleQuoteArg = 13,
-        DoubleQuoteArg = 14,
-        HereDocument = 15,
+        OUT_Append = 10,
+        ERR_Redirect = 11,
+        ERR_Append = 12,
+        IN_Redirect = 13,
+        Command = 14,
         Undefined = 69
-
     };
 
     class Token

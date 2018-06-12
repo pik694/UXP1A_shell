@@ -78,18 +78,21 @@ namespace shell::parser
 
         std::unordered_map< char, std::function< const Token()> > lexerFunctions_ = {
                 { '&', std::bind( &Lexer::getBackgroundToken, this ) },
-                { '.', std::bind( &Lexer::getProgramCallOrBackArg, this ) },
                 { ';', std::bind( &Lexer::getSemicolon, this ) },
-                { '>', std::bind( &Lexer::getOutRedirect, this ) },
-                { '<', std::bind( &Lexer::getInRedirectOrHereDocument, this ) },
                 { '=', std::bind( &Lexer::getAssignmentSign, this ) },
                 { '|', std::bind( &Lexer::getPipelineSign, this ) },
                 { '\"', std::bind( &Lexer::getDoubleQuoteArgument, this ) },
                 { '\'', std::bind( &Lexer::getSingleQuoteArgument, this ) },
                 { '-', std::bind( &Lexer::getFlag, this ) },
-                { ',', std::bind( &Lexer::getShellCommand, this ) }
         };
 
+        std::unordered_map< std::string, TokenType > keySymbols_ = {
+                { "1>", TokenType::OUT_Redirect },
+                { "1>>", TokenType::OUT_Append },
+                { "2>", TokenType::ERR_Redirect },
+                { "2>>", TokenType::ERR_Append },
+                { "<", TokenType::IN_Redirect },
+        };
         StreamWrapper streamWrapper_;
 
         void skipWhitespaces();
@@ -97,16 +100,12 @@ namespace shell::parser
         const Token getSemicolon();
         const Token getToken();
         const Token getBackgroundToken();
-        const Token getProgramCallOrBackArg();
-        const Token getOutRedirect();
-        const Token getInRedirectOrHereDocument();
-        const Token getArgument();
         const Token getAssignmentSign();
         const Token getPipelineSign();
         const Token getDoubleQuoteArgument();
         const Token getSingleQuoteArgument();
         const Token getFlag();
-        const Token getShellCommand();
+        const Token getCommand();
     };
 
 
