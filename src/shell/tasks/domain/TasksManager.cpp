@@ -35,7 +35,7 @@ void TasksManager::close() {
 void TasksManager::addTask(std::unique_ptr<Task> task) {
 
     {
-        std::lock_guard guard (shouldFinishMutex_);
+        std::lock_guard guard(shouldFinishMutex_);
         if (shouldFinish_) return;
     }
 
@@ -46,17 +46,18 @@ void TasksManager::addTask(std::unique_ptr<Task> task) {
         if (task->isBackgroundTask())
             runningChildren_.insert({*pid, std::move(task)});
         else
-            waitForChild(*pid);
+            waitForForegroundChild(*pid);
     }
 
     recoverStreams();
 }
 
 
-void TasksManager::waitForChild(pid_t child) {
+void TasksManager::waitForForegroundChild(pid_t child) {
 
     std::unique_lock<std::mutex> lock(lastExitedMutex_);
     lastExitedCV_.wait(lock, [=]() {
+
         while (!lastExitedChildren_.empty()) {
             if (lastExitedChildren_.front() == child) return true;
             lastExitedChildren_.pop();
@@ -64,7 +65,6 @@ void TasksManager::waitForChild(pid_t child) {
         return false;
     });
 
-    lock.unlock();
 }
 
 void TasksManager::killChildren() {
@@ -90,7 +90,7 @@ bool TasksManager::waitForShouldFinish() {
 
     std::unique_lock<std::mutex> lock(shouldFinishMutex_);
 
-    bool shouldFinish =  shouldFinishCV_.wait_for(lock, 500ms, [this]() {
+    bool shouldFinish = shouldFinishCV_.wait_for(lock, 500ms, [this]() {
         return shouldFinish_;
     });
 
@@ -102,18 +102,19 @@ bool TasksManager::waitForShouldFinish() {
 
 void TasksManager::pollExitedChildren(int flags) {
 
-    pid_t child;
-    int status;
+
     //TODO: set ? variable
-    while ((child = waitpid(0, &status, flags)) > 0) {
+
+    boost::optional<std::pair<pid_t, int>> result;
+    while ((result = waitForChild(flags))) {
         {
             std::lock_guard guard(lastExitedMutex_);
-            lastExitedChildren_.push(child);
+            lastExitedChildren_.push(result->first);
             lastExitedCV_.notify_one();
         }
         {
             std::lock_guard guard(runningChildrenMutex_);
-            runningChildren_.erase(child);
+            runningChildren_.erase(result->first);
         }
     }
 }
@@ -126,3 +127,15 @@ void TasksManager::recoverStreams() {
 
 }
 
+boost::optional<std::pair<pid_t, int>> TasksManager::waitForChild(int flags) {
+
+    pid_t child;
+    int status;
+
+    while ((child = waitpid(-1, &status, flags)) < 0)
+        if (errno == ECHILD) return boost::none;
+
+    return std::make_pair(child, status);
+
+
+}

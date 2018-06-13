@@ -36,11 +36,13 @@ namespace shell::tasks {
 
         void killChildren();
 
-        void waitForChild(pid_t pid);
+        void waitForForegroundChild(pid_t pid);
 
         bool waitForShouldFinish();
 
         void pollExitedChildren(int flags = 0);
+
+        boost::optional<std::pair<pid_t, int>> waitForChild(int flags);
 
         std::thread workerThread_;
 

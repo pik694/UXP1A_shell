@@ -10,6 +10,7 @@
 
 #include <shell/tasks/domain/TasksManager.hpp>
 #include <shell/tasks/domain/tasks/decorator/BackgroundTask.hpp>
+#include <shell/tasks/domain/tasks/ChildProcess.hpp>
 
 using namespace shell::tasks;
 using namespace test::shell::tasks;
@@ -161,9 +162,20 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
 
     }
 
+    BOOST_AUTO_TEST_CASE(run_child_task) {
 
 
+        TasksManager manager;
+        TasksManagerTester tester(manager);
 
+        auto task = std::unique_ptr<Task> (new ChildProcess("echo", {"1", "2"}));
+
+        manager.addTask(std::move(task));
+
+        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
+
+        manager.close();
+    }
 
 
 
