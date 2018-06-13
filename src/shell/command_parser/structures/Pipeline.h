@@ -8,7 +8,7 @@
 #include <list>
 #include <memory>
 #include "AbstractSyntaxTree.hpp"
-#include "ProgramExecution.h"
+#include "Command.h"
 
 namespace shell::parser::structures
 {
@@ -18,10 +18,10 @@ namespace shell::parser::structures
         explicit Pipeline() = default;
         virtual ~Pipeline() = default;
 
-        std::list< std::unique_ptr< ProgramExecution > > &getPrograms();
-        void addProgram( std::unique_ptr< ProgramExecution > & );
+        std::list< std::unique_ptr< Command > > &getCommands();
+        void addCommand( std::unique_ptr< Command > & );
     private:
-        std::list< std::unique_ptr< ProgramExecution > > programs_;
+        std::list< std::unique_ptr< Command > > commands_;
     };
 
 }

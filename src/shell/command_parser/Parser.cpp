@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <shell/command_parser/structures/Assignment.h>
+#include <shell/command_parser/structures/Pipeline.h>
 #include "Parser.hpp"
 
 using namespace shell::parser;
@@ -38,7 +39,7 @@ TokenType Parser::peekNextToken()
     if( !isBufferedToken() )
         bufferedToken_ = lexer_->getNextToken();
 
-    return TokenType::Undefined;// bufferedToken_.getType();
+    return bufferedToken_.getType();
 }
 
 Token Parser::getExpectedToken( std::list< TokenType > expected_tokens )
@@ -81,7 +82,23 @@ std::unique_ptr< structures::ast > Parser::parseAssignment()
 
 std::unique_ptr< structures::ast > Parser::parsePipeline()
 {
-    return nullptr;
+    std::unique_ptr< structures::ast > pipeline = std::make_unique< structures::Pipeline >();
+
+    do
+    {
+//        pipeline->addCommandList( parseCommandList() );
+    } while( [&]() -> bool
+    {
+        if( peekNextToken() == TokenType::Pipeline )
+        {
+            getExpectedToken( { TokenType::Pipeline } );
+            return true;
+        }
+        else
+            return false;
+    }() );
+
+    return pipeline;
 }
 
 ParserException::ParserException( const std::string &arg ) : runtime_error( arg ) { }

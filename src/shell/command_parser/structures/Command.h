@@ -15,11 +15,11 @@
 
 namespace shell::parser::structures
 {
-    class ProgramExecution : public AbstractSyntaxTree
+    class Command
     {
     public:
-        explicit ProgramExecution();
-        virtual ~ProgramExecution() = default;
+        explicit Command();
+        virtual ~Command() = default;
 
         Out *getOutRedirection();
         Err *getErrRedirection();
