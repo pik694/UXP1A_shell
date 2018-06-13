@@ -15,7 +15,7 @@ namespace shell::tasks {
     class ChildProcess : public Task {
     public:
 
-        ChildProcess(std::string programName_, std::list<const std::string> args_);
+        ChildProcess(std::string programName_, std::list<std::string> args_);
 
         boost::optional<pid_t> run() override;
 
@@ -24,7 +24,7 @@ namespace shell::tasks {
         char *const *getArgs();
 
         const std::string programName_;
-        std::list<const std::string> args_;
+        std::list<std::string> args_;
     };
 
 }

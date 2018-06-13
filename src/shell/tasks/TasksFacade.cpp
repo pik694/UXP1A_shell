@@ -6,7 +6,7 @@
 
 using namespace shell::tasks;
 
-void TasksFacade::buildAndAddTask(std::unique_ptr<shell::parser::ast> ast) {
+void TasksFacade::buildAndAddTask(std::unique_ptr<shell::parser::structures::ast> ast) {
 
     auto task = factory_.build(std::move(ast));
 

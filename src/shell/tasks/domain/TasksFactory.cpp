@@ -8,7 +8,7 @@
 using namespace shell::tasks;
 
 
-std::unique_ptr<Task> TasksFactory::build(std::unique_ptr<shell::parser::ast> ast) {
+std::unique_ptr<Task> TasksFactory::build(std::unique_ptr<shell::parser::structures::ast> ast) {
     //TODO
     throw std::runtime_error("Not implemented yet");
 }

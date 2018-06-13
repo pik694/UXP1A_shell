@@ -11,6 +11,8 @@
 #include <queue>
 #include <thread>
 #include <unordered_map>
+#include <mutex>
+#include <condition_variable>
 
 namespace test::shell::tasks{
     class TasksManagerTester;

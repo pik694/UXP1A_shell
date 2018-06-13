@@ -15,8 +15,6 @@
 #include <shell/command_parser/Parser.hpp>
 #include "UserInterface.hpp"
 
-std::atomic<bool> shouldClose(false);
-
 namespace shell::ui {
     class Controller {
     public:
@@ -35,7 +33,7 @@ namespace shell::ui {
 
         const std::string getCurrentDirectory();
 
-        std::unique_ptr<Variable> getVariable(const std::string &variable) const;
+        std::unique_ptr<shell::model::variables::Variable> getVariable(const std::string &variable) const;
 
         void setVariable(const std::string &name, const std::string &value);
 
@@ -57,9 +55,14 @@ namespace shell::ui {
 
         static Controller *instance;
 
-        std::unique_ptr<Parser> parser;
+        static std::atomic<bool> shouldClose;
+
+
+        std::unique_ptr<shell::parser::Parser> parser;
         std::unique_ptr<UserInterface> userInterface;
-        std::unique_ptr<ModelFacade> modelFacade;
+        std::unique_ptr<shell::model::ModelFacade> modelFacade;
+
+
 
         static const int HOST_NAME_SIZE = 64;
         static const int CURRENT_DIR_SIZE = 256;

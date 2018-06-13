@@ -5,7 +5,7 @@
 #include <system_error>
 #include "ChildProcess.hpp"
 
-shell::tasks::ChildProcess::ChildProcess(std::string programName, std::list<const std::string> args)
+shell::tasks::ChildProcess::ChildProcess(std::string programName, std::list<std::string> args)
         : programName_(std::move(programName)), args_(std::move(args)) {}
 
 boost::optional<pid_t> shell::tasks::ChildProcess::run() {

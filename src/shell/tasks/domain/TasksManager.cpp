@@ -5,6 +5,7 @@
 #include <iostream>
 #include <csignal>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "TasksManager.hpp"
 
 using namespace shell::tasks;

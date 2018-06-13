@@ -6,5 +6,5 @@
 #include <shell/ui/Controller.hpp>
 
 int main(int argc, char** argv) {
-    Controller::getInstance().start();
+    shell::ui::Controller::getInstance().start();
 }

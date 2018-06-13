@@ -7,12 +7,12 @@
 
 #include <memory>
 #include <shell/tasks/domain/tasks/Task.hpp>
-#include <shell/command_parser/AbstractSyntaxTree.hpp>
+#include <shell/command_parser/structures/AbstractSyntaxTree.hpp>
 
 namespace shell::tasks {
     class TasksFactory {
     public:
-        std::unique_ptr<Task> build(std::unique_ptr<parser::ast> ast);
+        std::unique_ptr<Task> build(std::unique_ptr<parser::structures::ast> ast);
     };
 }
 

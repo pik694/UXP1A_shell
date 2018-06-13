@@ -5,7 +5,7 @@
 #ifdef BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
-
+#include <sys/wait.h>
 #include <shell/tasks/domain/tasks/ChildProcess.hpp>
 
 using namespace shell::tasks;

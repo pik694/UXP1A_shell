@@ -6,9 +6,13 @@
 
 using namespace shell::ui;
 
+
+std::atomic<bool> Controller::shouldClose = false;
+
+
 void Controller::start()
 {
-    std::unique_ptr<TasksFacade> tasksFacade(new TasksFacade);
+    std::unique_ptr<shell::tasks::TasksFacade> tasksFacade(new shell::tasks::TasksFacade);
     initializeSignals();
 
     while (true) {
@@ -50,7 +54,7 @@ const std::string Controller::getCurrentDirectory()
     return UNKNOWN_CURRENT_DIR;
 }
 
-std::unique_ptr<Variable> Controller::getVariable(const std::string &variable) const
+std::unique_ptr<shell::model::variables::Variable> Controller::getVariable(const std::string &variable) const
 {
     return modelFacade->getVariable(variable);
 }
@@ -73,7 +77,7 @@ void Controller::initializeSignals() const
     signal(SIGTTOU, SIG_IGN);
 }
 
-static void Controller::signalHandler(int sigType)
+void Controller::signalHandler(int sigType)
 {
     if (sigType == SIGINT) {
         shouldClose = true;
