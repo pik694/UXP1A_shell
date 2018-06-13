@@ -15,6 +15,12 @@ namespace shell::tasks{
     public:
         Pipeline();
 
+        int getInDescriptor() const;
+
+        int getOutDescriptor() const;
+
+        const std::string &getName() const;
+
         virtual ~Pipeline();
 
     private:
