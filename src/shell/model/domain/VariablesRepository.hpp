@@ -13,15 +13,8 @@
 namespace shell::model {
     class VariablesRepository {
     public:
-        void setVariable(shell::model::variables::Variable &variable) {
-            std::lock_guard guard(variablesMutex_);
-            variables_[variable.getName_()] = variable;
-        }
-
-        shell::model::variables::Variable getVariable(std::string varName) {
-            std::lock_guard guard(variablesMutex_);
-            return variables_[varName];
-        }
+        void setVariable(shell::model::variables::Variable &variable);
+        shell::model::variables::Variable getVariable(std::string varName);
 
     private:
         std::mutex variablesMutex_;

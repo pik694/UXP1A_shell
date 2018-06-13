@@ -11,9 +11,7 @@
 namespace shell::model::variables {
     class VariablesFactory {
     public:
-        static std::unique_ptr<Variable> produce(const std::string &name, const std::string &values) {
-            return std::make_unique<shell::model::variables::Variable>(name, values);
-        }
+        static std::unique_ptr<Variable> produce(const std::string &name, const std::string &values);
     };
 }
 
