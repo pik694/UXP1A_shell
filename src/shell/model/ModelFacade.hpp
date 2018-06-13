@@ -7,19 +7,18 @@
 
 #include <shell/model/domain/variables/Variable.hpp>
 #include <memory>
+#include <shell/model/domain/VariablesRepository.hpp>
 
 namespace shell::model {
 
     class ModelFacade {
+    private:
+        VariablesRepository *variablesRepository_;
     public:
-        //TODO: all methods must be thread safe
-
-        //TODO: overload methods by using different parameters' lists
-        //TODO: at this point I cannot foresee parameters' lists
-
-        void setVariable();
-        void exportVariable();
-
+        ModelFacade();
+        ~ModelFacade() {delete  variablesRepository_;}
+        void setVariable(const std::string &varName, const std::string &varValues);
+        void exportVariable(const std::string &varName);
         std::unique_ptr<variables::Variable> getVariable(const std::string& name);
 
     };
