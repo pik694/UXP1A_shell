@@ -12,9 +12,11 @@ namespace shell::parser::structures
     class Assignment : public AbstractSyntaxTree
     {
     public:
-        explicit Assignment() = default;
+        explicit Assignment( const std::string &variable );
         virtual ~Assignment() = default;
 
+    private:
+        std::string variable_;
     };
 }
 

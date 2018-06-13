@@ -16,7 +16,6 @@ namespace shell::parser
         Semicolon = 1,
         Pipeline = 2,
         Background = 3,
-        Flag = 4,
         Assignment = 5,
         HereDocument = 6,
         SingleQuoteArg = 7,

@@ -55,13 +55,6 @@ const Token Lexer::getSemicolon()
     return Token( TokenType::Semicolon );
 }
 
-const Token Lexer::getAssignmentSign()
-{
-    streamWrapper_.getChar();
-
-    return Token( TokenType::Assignment );
-}
-
 const Token Lexer::getPipelineSign()
 {
     streamWrapper_.getChar();
@@ -125,18 +118,6 @@ const Token Lexer::getSingleQuoteArgument()
     return Token( TokenType::SingleQuoteArg, buffer );
 }
 
-const Token Lexer::getFlag()
-{
-    streamWrapper_.getChar();
-
-    auto flag = streamWrapper_.getChar();
-    if( !isalpha( flag ) )
-        throw LexerException( "Unexpected character as a flag at row: " + std::to_string( streamWrapper_.getRow() ) +
-                                " at col: " + std::to_string( streamWrapper_.getColumn() ) );
-
-    return Token( TokenType::Flag, std::string( 1, flag ) );
-}
-
 const Token Lexer::getCommand()
 {
     Token token( TokenType::Command );
@@ -151,6 +132,11 @@ const Token Lexer::getCommand()
     {
         token.setType( TokenType::HereDocument );
         token.setValue( token_value.substr( 2, token_value.size() - 2 ) );
+    }
+    else if( token_value.size() > 1 && token_value.at( token_value.length() - 1 ) == '=')
+    {
+        token.setType( TokenType::Assignment );
+        token.setValue( token_value.substr( 0, token_value.length() - 1 ) );
     }
     else
         token.setValue( token_value );

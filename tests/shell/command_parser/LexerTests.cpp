@@ -137,12 +137,13 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithAssignmentCharShouldReturnIt )
     {
-        test = "=";
+        test = "VAR=";
 
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
         BOOST_CHECK( token.getType() == TokenType::Assignment );
+        BOOST_CHECK_EQUAL( token.getValue(), "VAR" );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithPipelineCharShouldReturnIt )
@@ -235,17 +236,8 @@ BOOST_AUTO_TEST_SUITE( LexerTests )
         std::istringstream stream( test );
         Lexer lexer( stream );
         Token token( lexer.getNextToken() );
-        BOOST_CHECK( token.getType() == TokenType::Flag );
-        BOOST_CHECK_EQUAL( token.getValue(), "c" );
-    }
-
-    BOOST_AUTO_TEST_CASE( GivenStreamWithInvalidFlagShouldThrowException )
-    {
-        test = "-_";
-
-        std::istringstream stream( test );
-        Lexer lexer( stream );
-        BOOST_CHECK_THROW( lexer.getNextToken(), LexerException  );
+        BOOST_CHECK( token.getType() == TokenType::Command );
+        BOOST_CHECK_EQUAL( token.getValue(), "-c" );
     }
 
     BOOST_AUTO_TEST_CASE( GivenStreamWithBashCommandShouldReturnIt )

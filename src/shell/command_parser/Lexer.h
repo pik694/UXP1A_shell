@@ -79,11 +79,9 @@ namespace shell::parser
         std::unordered_map< char, std::function< const Token()> > lexerFunctions_ = {
                 { '&', std::bind( &Lexer::getBackgroundToken, this ) },
                 { ';', std::bind( &Lexer::getSemicolon, this ) },
-                { '=', std::bind( &Lexer::getAssignmentSign, this ) },
                 { '|', std::bind( &Lexer::getPipelineSign, this ) },
                 { '\"', std::bind( &Lexer::getDoubleQuoteArgument, this ) },
                 { '\'', std::bind( &Lexer::getSingleQuoteArgument, this ) },
-                { '-', std::bind( &Lexer::getFlag, this ) },
                 { '\n', std::bind( &Lexer::getNewline, this ) }
         };
 
@@ -101,11 +99,9 @@ namespace shell::parser
         const Token getSemicolon();
         const Token getToken();
         const Token getBackgroundToken();
-        const Token getAssignmentSign();
         const Token getPipelineSign();
         const Token getDoubleQuoteArgument();
         const Token getSingleQuoteArgument();
-        const Token getFlag();
         const Token getCommand();
         const Token getNewline();
     };
