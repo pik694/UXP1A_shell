@@ -8,11 +8,14 @@
 #include <iostream>
 #include <csignal>
 #include <zconf.h>
+#include <memory>
+#include <atomic>
+#include <shell/tasks/TasksFacade.hpp>
+#include <shell/model/ModelFacade.hpp>
+#include <shell/command_parser/Parser.hpp>
+#include "UserInterface.hpp"
 
-using namespace shell::model;
-using namespace shell::parser;
-using namespace shell::tasks;
-
+std::atomic<bool> shouldClose(false);
 
 namespace shell::ui {
     class Controller {
@@ -32,7 +35,12 @@ namespace shell::ui {
             while (true) {
                 showHeader();
                 std::string command = userInterface->getNextCommand().get();
-                tasksFacade->buildAndAddTask(parser->buildTree(command));
+                try {
+                    tasksFacade->buildAndAddTask(parser->buildTree(command));
+                }
+                catch (std::exception &e) {
+                    userInterface->printError(e.what());
+                }
             }
         }
 
@@ -68,7 +76,7 @@ namespace shell::ui {
             return modelFacade->getVariable(variable);
         }
 
-        void initializeSignals()
+        void initializeSignals() const
         {
             signal(SIGINT, signalHandler);
             signal(SIGTSTP, signalHandler);
@@ -76,14 +84,15 @@ namespace shell::ui {
             signal(SIGTTOU, SIG_IGN);
         }
 
-        static inline void signalHandler(int sigType)
+        static void signalHandler(int sigType)
         {
             if (sigType == SIGINT) {
-
+                shouldClose = true;
             } else if (sigType == SIGTSTP) {
-                exit(0);
+                std::cout << "SIGTSTP";
             }
         }
+
 
         Controller(Controller const &) = delete;
 
@@ -105,6 +114,7 @@ namespace shell::ui {
         static const int CURRENT_DIR_SIZE = 256;
         const std::string UNKNOWN_HOST_NAME = "unknownHostName";
         const std::string UNKNOWN_CURRENT_DIR = "unknownCurrentDirectory";
+
     };
 }
 

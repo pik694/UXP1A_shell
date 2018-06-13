@@ -3,8 +3,7 @@
 #include <fcntl.h>
 #include <zconf.h>
 #include <memory>
-
-using namespace shell::ui;
+#include <shell/ui/Controller.hpp>
 
 int main(int argc, char** argv) {
     Controller::getInstance().start();
