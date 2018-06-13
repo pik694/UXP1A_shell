@@ -14,21 +14,11 @@ namespace shell::ui {
     class UserInterface {
     public:
 
-        boost::optional<std::string> getNextCommand()
-        {
-            std::string input;
-            boost::optional<std::string> command;
-            std::getline(std::cin, input);
-            command.emplace(input);
-            return command;
-        }
+        boost::optional<std::string> getNextCommand();
 
-        void printError(const std::string& message)
-        {
-            std::cerr << "Error:" << message << std::endl;
-        }
+        void printError(const std::string& message);
+
         void printLog(const std::string&);
-
 
     };
 }
