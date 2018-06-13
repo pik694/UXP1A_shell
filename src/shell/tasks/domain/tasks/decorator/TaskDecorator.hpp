@@ -18,8 +18,8 @@ namespace shell::tasks::decorators {
 
         ~TaskDecorator() override = 0;
 
-    private:
-        const std::unique_ptr<Task> decoratedTask_;
+    protected:
+        std::unique_ptr<Task> decoratedTask_;
     };
 }
 

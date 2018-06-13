@@ -6,12 +6,17 @@
 #define UXP1A_SHELL_PIPELINEDTASKS_HPP
 
 #include <memory>
+#include <list>
+#include <shell/tasks/domain/TasksManager.hpp>
 #include "Task.hpp"
 
 namespace shell::tasks {
     class PipelinedTasks : public Task {
+    public:
+
     private:
-    //TODO
+//        TasksManager& manager_;
+//        std::list<std::unique_ptr<Task>>
     };
 }
 
