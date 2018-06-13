@@ -6,6 +6,7 @@
 #include <csignal>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <shell/model/ModelFacade.hpp>
 #include "TasksManager.hpp"
 
 using namespace shell::tasks;
@@ -89,13 +90,19 @@ bool TasksManager::waitForShouldFinish() {
 
     using namespace std::chrono_literals;
 
-    std::unique_lock<std::mutex> lock(shouldFinishMutex_);
+    bool shouldFinish = false;
 
-    bool shouldFinish = shouldFinishCV_.wait_for(lock, 500ms, [this]() {
-        return shouldFinish_;
-    });
+    try {
 
-    lock.unlock();
+        std::unique_lock<std::mutex> lock(shouldFinishMutex_);
+
+        shouldFinish = shouldFinishCV_.wait_for(lock, 500ms, [this]() {
+            return shouldFinish_;
+        });
+    }
+    catch (std::exception& e){
+        std::cerr << e.what() << std::endl;
+    }
 
     return shouldFinish;
 
@@ -117,6 +124,8 @@ void TasksManager::pollExitedChildren(int flags) {
             std::lock_guard guard(runningChildrenMutex_);
             runningChildren_.erase(result->first);
         }
+
+        //TODO: set "?" variable
     }
 }
 

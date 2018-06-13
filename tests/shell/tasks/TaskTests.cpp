@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
 
     BOOST_AUTO_TEST_CASE(run_simple_echo) {
 
-        ChildProcess childProcess("echo", {"1","2"});
+        ChildProcess childProcess("echo", {"1", "2"});
 
         auto pid = childProcess.run();
 
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
 
         pid_t returnedPid;
 
-        while ((returnedPid = waitpid(-1, &status, 0)) == -1){
+        while ((returnedPid = waitpid(-1, &status, 0)) == -1) {
             if (errno != EINTR)
                 throw std::system_error(errno, std::system_category());
         }
@@ -38,6 +38,11 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
         BOOST_CHECK_EQUAL(errno, ECHILD);
 
     }
+
+    BOOST_AUTO_TEST_CASE(fifo_should_be_created_and_automatically_removed) {
+
+    }
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

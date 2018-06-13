@@ -10,12 +10,22 @@
 #include "Task.hpp"
 
 namespace shell::tasks{
+
     class Pipeline {
+    public:
+        Pipeline();
+
+        virtual ~Pipeline();
 
     private:
-        const std::string name_;
-        std::weak_ptr<Task> writer_;
-        std::weak_ptr<Task> reader_;
+
+        bool createFifo(int seq);
+
+        std::string name_;
+        int inDescriptor_;
+        int outDescriptor_;
+
+        static const std::string PIPELINES_PATH;
     };
 }
 
