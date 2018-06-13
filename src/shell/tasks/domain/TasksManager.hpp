@@ -10,23 +10,25 @@
 #include <list>
 #include <queue>
 #include <thread>
-#include <set>
+#include <unordered_map>
+
+namespace test::shell::tasks{
+    class TasksManagerTester;
+}
 
 namespace shell::tasks {
     class TasksManager {
     public:
 
+        using running_children_t = std::unordered_map<pid_t, std::unique_ptr<Task>>;
+
         TasksManager();
 
         void addTask(std::unique_ptr<Task> task);
 
-        void waitForChild(pid_t child);
-
-        void addBackgroundChild(pid_t child);
-
         void close();
 
-        virtual ~TasksManager();
+        virtual ~TasksManager() = default;
 
     private:
 
@@ -34,24 +36,36 @@ namespace shell::tasks {
 
         void killChildren();
 
+        void waitForChild(pid_t pid);
+
 
         std::thread workerThread_;
 
-        std::atomic<bool> shouldFinish_ = false;
+        std::mutex mutex_;
+        std::condition_variable conditionVariable_;
 
-        std::mutex childrenExitedMutex_;
-        std::condition_variable childrenExitedCV_;
-        bool childrenExited = false;
+        bool shouldFinish_ = false;
+        bool childrenExited_ = false;
 
         std::mutex runningChildrenMutex_;
-//        std::condition_variable runningChildrenCV_; TODO: decide whether this should be removed
-        std::set<pid_t> runningChildren_;
+        running_children_t runningChildren_;
 
         std::mutex lastExitedMutex_;
         std::condition_variable lastExitedCV_;
         std::queue<pid_t> lastExitedChildren_;
 
+        static TasksManager* instance_;
+        static void handleSigChld(int signal);
+
+        void recoverStreams();
+
+        int stdoutCopy;
+        int stdinCopy;
+        int stderrCopy;
+
+        friend class test::shell::tasks::TasksManagerTester;
     };
+
 }
 
 

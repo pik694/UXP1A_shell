@@ -5,16 +5,21 @@
 #ifndef UXP1A_SHELL_TASK_HPP
 #define UXP1A_SHELL_TASK_HPP
 
-#include <shell/tasks/domain/TasksManager.hpp>
+#include <sys/types.h>
+#include <boost/optional.hpp>
 
 namespace shell::tasks {
 
     class Task {
     public:
 
-        virtual pid_t run(TasksManager& manager) = 0;
+        virtual boost::optional<pid_t> run() = 0;
+
+        virtual bool isBackgroundTask(){return false;}
 
         virtual ~Task() = default;
+
+
     };
 }
 

@@ -8,15 +8,18 @@
 #include <memory>
 #include <shell/tasks/domain/tasks/Task.hpp>
 
-namespace shell::tasks::decorators{
-    class TaskDecorator : Task {
+namespace shell::tasks::decorators {
+    class TaskDecorator : public Task {
 
-        pid_t run(TasksManager& manager) override {
-            decoratedTask_->run(manager);
-        }
+    public:
+        explicit TaskDecorator(std::unique_ptr<Task> decoratedTask) : decoratedTask_(std::move(decoratedTask)) {}
+
+        boost::optional<pid_t> run() override;
+
+        ~TaskDecorator() override = 0;
 
     private:
-        std::unique_ptr<Task> decoratedTask_;
+        const std::unique_ptr<Task> decoratedTask_;
     };
 }
 
