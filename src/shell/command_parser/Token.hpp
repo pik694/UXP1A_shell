@@ -43,6 +43,8 @@ namespace shell::parser
         {
             type_ = token.type_;
             value_ = token.value_;
+
+            return *this;
         }
 
         TokenType getType()
