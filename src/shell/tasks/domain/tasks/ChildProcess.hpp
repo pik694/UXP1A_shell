@@ -11,11 +11,20 @@
 #include "Task.hpp"
 
 namespace shell::tasks {
-    class ChildProcess : Task {
+
+    class ChildProcess : public Task {
+    public:
+
+        ChildProcess(std::string programName_, std::list<const std::string> args_);
+
+        boost::optional<pid_t> run() override;
 
     private:
-        std::list<const std::string> args_;
+
+        char *const *getArgs();
+
         const std::string programName_;
+        std::list<const std::string> args_;
     };
 
 }

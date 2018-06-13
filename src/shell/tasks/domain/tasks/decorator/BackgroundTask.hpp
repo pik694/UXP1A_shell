@@ -10,7 +10,10 @@
 namespace shell::tasks::decorators {
 
     class BackgroundTask : public TaskDecorator {
+    public:
+        explicit BackgroundTask(std::unique_ptr<Task> decoratedTask);
 
+        bool isBackgroundTask() override;
     };
 
 }

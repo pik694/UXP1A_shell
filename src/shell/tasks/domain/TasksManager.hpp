@@ -10,23 +10,25 @@
 #include <list>
 #include <queue>
 #include <thread>
-#include <set>
+#include <unordered_map>
+
+namespace test::shell::tasks{
+    class TasksManagerTester;
+}
 
 namespace shell::tasks {
     class TasksManager {
     public:
 
+        using running_children_t = std::unordered_map<pid_t, std::unique_ptr<Task>>;
+
         TasksManager();
 
         void addTask(std::unique_ptr<Task> task);
 
-        void waitForChild(pid_t child);
-
-        void addBackgroundChild(pid_t child);
-
         void close();
 
-        virtual ~TasksManager();
+        virtual ~TasksManager() = default;
 
     private:
 
@@ -34,24 +36,36 @@ namespace shell::tasks {
 
         void killChildren();
 
+        void waitForForegroundChild(pid_t pid);
+
+        bool waitForShouldFinish();
+
+        void pollExitedChildren(int flags = 0);
+
+        boost::optional<std::pair<pid_t, int>> waitForChild(int flags);
 
         std::thread workerThread_;
 
-        std::atomic<bool> shouldFinish_ = false;
-
-        std::mutex childrenExitedMutex_;
-        std::condition_variable childrenExitedCV_;
-        bool childrenExited = false;
+        std::mutex shouldFinishMutex_;
+        std::condition_variable shouldFinishCV_;
+        bool shouldFinish_ = false;
 
         std::mutex runningChildrenMutex_;
-//        std::condition_variable runningChildrenCV_; TODO: decide whether this should be removed
-        std::set<pid_t> runningChildren_;
+        running_children_t runningChildren_;
 
         std::mutex lastExitedMutex_;
         std::condition_variable lastExitedCV_;
         std::queue<pid_t> lastExitedChildren_;
 
+        void recoverStreams();
+
+        int stdoutCopy;
+        int stdinCopy;
+        int stderrCopy;
+
+        friend class test::shell::tasks::TasksManagerTester;
     };
+
 }
 
 
