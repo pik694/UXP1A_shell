@@ -71,9 +71,19 @@ namespace shell::ui {
             return UNKNOWN_CURRENT_DIR;
         }
 
-        std::unique_ptr<Variable> getVariable(const std::string &variable)
+        std::unique_ptr<Variable> getVariable(const std::string &variable) const
         {
             return modelFacade->getVariable(variable);
+        }
+
+        void setVariable(const std::string &name, const std::string &value)
+        {
+            modelFacade->setVariable(name, value);
+        }
+
+        void exportVariable(const std::string &name)
+        {
+            modelFacade->exportVariable(name);
         }
 
         void initializeSignals() const
