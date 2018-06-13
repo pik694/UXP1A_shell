@@ -21,7 +21,6 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         TasksManager manager;
         TasksManagerTester tester(manager);
 
-        BOOST_CHECK_EQUAL(tester.getChildrenExited(), false);
         BOOST_CHECK_EQUAL(tester.getLastExitedChildren().empty(), true);
         BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
 
@@ -37,7 +36,6 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
 
         manager.close();
 
-        BOOST_CHECK_EQUAL(tester.getChildrenExited(), false);
         BOOST_CHECK_EQUAL(tester.getLastExitedChildren().empty(), true);
         BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
 
@@ -50,12 +48,11 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         TasksManagerTester tester(manager);
 
 
-        auto task = std::unique_ptr<Task> (new MockChildProcessTask());
+        auto task = std::unique_ptr<Task> (new MockChildProcessTask(1));
         auto decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
 
         manager.addTask(std::move(decoratedTask));
 
-        BOOST_CHECK_EQUAL(tester.getChildrenExited(), false);
         BOOST_CHECK_EQUAL(tester.getLastExitedChildren().empty(), true);
         BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), false);
 
@@ -70,16 +67,19 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         TasksManagerTester tester(manager);
 
 
-        auto task = std::unique_ptr<Task> (new MockChildProcessRunningTask());
+        auto task = std::unique_ptr<Task> (new MockChildProcessRunningTask(0));
         auto decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
 
         manager.addTask(std::move(decoratedTask));
 
-        std::this_thread::sleep_for(100ms);
+        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), false);
+
+        std::this_thread::sleep_for(1s);
+
+        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
 
         manager.close();
 
-        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
 
     }
 
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         TasksManager manager;
         TasksManagerTester tester(manager);
 
-        auto task = std::unique_ptr<Task> (new MockChildProcessRunningTask());
+        auto task = std::unique_ptr<Task> (new MockChildProcessRunningTask(0));
 
         manager.addTask(std::move(task));
 
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         TasksManager manager;
         TasksManagerTester tester(manager);
 
-        auto task = std::unique_ptr<Task> (new MockChildProcessTask());
+        auto task = std::unique_ptr<Task> (new MockChildProcessTask(1));
         auto decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
 
         manager.addTask(std::move(decoratedTask));
@@ -116,6 +116,55 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
 
 
     }
+
+    BOOST_AUTO_TEST_CASE(add_several_tasks_and_exit) {
+
+        TasksManager manager;
+        TasksManagerTester tester(manager);
+
+        auto task = std::unique_ptr<Task> (new MockChildProcessRunningTask());
+        auto decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
+
+        manager.addTask(std::move(decoratedTask));
+
+
+        task = std::unique_ptr<Task> (new MockChildProcessRunningTask());
+        decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
+
+        manager.addTask(std::move(decoratedTask));
+
+        task = std::unique_ptr<Task> (new MockChildProcessRunningTask());
+        decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
+
+        manager.addTask(std::move(decoratedTask));
+
+        manager.close();
+
+        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
+
+
+    }
+
+    BOOST_AUTO_TEST_CASE(cannot_add_task_when_already_closed) {
+
+        TasksManager manager;
+        TasksManagerTester tester(manager);
+
+        auto task = std::unique_ptr<Task> (new MockChildProcessTask(1));
+        auto decoratedTask = std::unique_ptr<Task>(new decorators::BackgroundTask(std::move(task)));
+
+        manager.close();
+
+        manager.addTask(std::move(decoratedTask));
+
+        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
+
+    }
+
+
+
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -9,24 +9,12 @@
 
 using namespace shell::tasks;
 
-TasksManager *TasksManager::instance_ = nullptr;
-
-void TasksManager::handleSigChld(int signal) {
-    std::lock_guard guard(instance_->mutex_);
-    instance_->childrenExited_ = true;
-    instance_->conditionVariable_.notify_one();
-}
-
-
 TasksManager::TasksManager() :
         workerThread_(std::bind(&TasksManager::worker, this)),
         stdinCopy(dup(STDIN_FILENO)),
         stdoutCopy(dup(STDOUT_FILENO)),
         stderrCopy(dup(STDERR_FILENO)) {
 
-    instance_ = this;
-
-    std::signal(SIGCHLD, TasksManager::handleSigChld);
 
 }
 
@@ -35,10 +23,10 @@ void TasksManager::close() {
     killChildren();
 
     {
-        std::lock_guard guard(mutex_);
+        std::lock_guard guard(shouldFinishMutex_);
         shouldFinish_ = true;
     }
-    conditionVariable_.notify_one();
+    shouldFinishCV_.notify_one();
 
     workerThread_.join();
 
@@ -46,7 +34,11 @@ void TasksManager::close() {
 
 void TasksManager::addTask(std::unique_ptr<Task> task) {
 
-    if (shouldFinish_) return;
+    {
+        std::lock_guard guard (shouldFinishMutex_);
+        if (shouldFinish_) return;
+    }
+
 
     auto pid = task->run();
 
@@ -85,39 +77,45 @@ void TasksManager::killChildren() {
 
 void TasksManager::worker() {
 
-    while (!shouldFinish_) {
+    while (!waitForShouldFinish())
+        pollExitedChildren(WNOHANG);
 
-        std::unique_lock<std::mutex> lock(mutex_);
-        conditionVariable_.wait(lock, [this]() {
-            return childrenExited_ || shouldFinish_;
-        });
-        childrenExited_ = false;
-        lock.unlock();
+    pollExitedChildren();
 
+}
 
-        pid_t child;
-        //TODO: set ? variable
-        while ((child = waitpid(0, nullptr, WNOHANG)) > 0) {
-            {
-                std::lock_guard guard(lastExitedMutex_);
-                lastExitedChildren_.push(child);
-                lastExitedCV_.notify_one();
-            }
-            {
-                std::lock_guard guard(runningChildrenMutex_);
-                runningChildren_.erase(child);
-            }
-        }
+bool TasksManager::waitForShouldFinish() {
 
-    }
+    using namespace std::chrono_literals;
+
+    std::unique_lock<std::mutex> lock(shouldFinishMutex_);
+
+    bool shouldFinish =  shouldFinishCV_.wait_for(lock, 500ms, [this]() {
+        return shouldFinish_;
+    });
+
+    lock.unlock();
+
+    return shouldFinish;
+
+}
+
+void TasksManager::pollExitedChildren(int flags) {
 
     pid_t child;
-    while ((child = waitpid(0, nullptr, 0)) > 0) {
-        std::lock_guard guard(runningChildrenMutex_);
-        runningChildren_.erase(child);
+    int status;
+    //TODO: set ? variable
+    while ((child = waitpid(0, &status, flags)) > 0) {
+        {
+            std::lock_guard guard(lastExitedMutex_);
+            lastExitedChildren_.push(child);
+            lastExitedCV_.notify_one();
+        }
+        {
+            std::lock_guard guard(runningChildrenMutex_);
+            runningChildren_.erase(child);
+        }
     }
-
-
 }
 
 void TasksManager::recoverStreams() {
