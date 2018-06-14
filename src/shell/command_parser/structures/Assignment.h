@@ -19,6 +19,8 @@ namespace shell::parser::structures
         std::string getValue();
         void setValue( const std::string &value );
 
+        std::unique_ptr<shell::tasks::Task> accept( Visitor &visitor ) override;
+
     private:
         std::string variable_;
         std::string value_;

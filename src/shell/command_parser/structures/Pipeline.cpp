@@ -15,3 +15,8 @@ void Pipeline::addCommandList( std::unique_ptr< CommandList > &command_list )
 {
     commandsList_.push_back( std::move( command_list ) );
 }
+
+std::unique_ptr<shell::tasks::Task> Pipeline::accept( Visitor &visitor )
+{
+    return visitor.visit( *this );
+}

@@ -22,6 +22,8 @@ namespace shell::parser::structures
         std::vector< std::unique_ptr< CommandList > > &getCommandsList();
         void addCommandList( std::unique_ptr< CommandList > &command_list );
 
+        std::unique_ptr<shell::tasks::Task> accept( Visitor &visitor ) override;
+
     private:
         std::vector< std::unique_ptr< CommandList > > commandsList_;
     };

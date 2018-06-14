@@ -14,6 +14,8 @@ namespace shell::parser::structures
     public:
         explicit HereDocument() = default;
         virtual ~HereDocument() = default;
+
+        std::unique_ptr<shell::tasks::Task> accept( Visitor &visitor ) override;
     };
 }
 #endif //UXP1A_SHELL_HEREDOCUMENT_H

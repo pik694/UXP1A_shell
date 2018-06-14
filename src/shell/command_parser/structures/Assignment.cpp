@@ -23,3 +23,8 @@ void Assignment::setValue( const std::string &value )
 {
     value_ = value;
 }
+
+std::unique_ptr<shell::tasks::Task> Assignment::accept( Visitor &visitor )
+{
+    return visitor.visit( *this );
+}
