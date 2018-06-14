@@ -117,11 +117,10 @@ std::unique_ptr< structures::Assignment > Parser::parseAssignment()
     auto assignment = std::make_unique< structures::Assignment >( getExpectedToken( { TokenType::Assignment } ).getValue() );
 
     Token token = getExpectedToken( { TokenType::Command, TokenType::SingleQuoteArg, TokenType::DoubleQuoteArg } );
-
+    std::string variable_value = token.getValue();
     //replace environment variables by theirs values
     if( token.getType() == TokenType::DoubleQuoteArg || token.getType() == TokenType::Command )
     {
-        std::string variable_value = token.getValue();
         while( true )
         {
             std::size_t found = variable_value.find( '$' );
@@ -129,13 +128,15 @@ std::unique_ptr< structures::Assignment > Parser::parseAssignment()
                 break;
 
             std::string variable, new_value;
-            for( size_t i = found; i < variable_value.length() && !isspace( variable_value[ i ] ); ++i )
+            for( size_t i = found+1; i < variable_value.length() && !isspace( variable_value[ i ] ); ++i )
                 variable += variable_value[ i ];
 
             new_value = shell::ui::Controller::getInstance().getVariable( variable )->getStringValues();
             variable_value = std::regex_replace( variable_value, std::regex( "\\$" + variable ), new_value );
         }
     }
+
+    assignment->setValue( variable_value );
     return assignment;
 }
 

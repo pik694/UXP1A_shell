@@ -19,7 +19,8 @@ void ModelFacade::exportVariable(const std::string &varName) {
 std::unique_ptr<variables::Variable>  ModelFacade::getVariable(const std::string &name) {
     std::unique_ptr<variables::Variable> variable(new variables::Variable(variablesRepository_->getVariable(name)));
     if (variable->getName_() == ""){
-        return std::unique_ptr<variables::Variable>(new variables::Variable(name, getenv(name.c_str())));
+        char *env = getenv(name.c_str());
+        return std::unique_ptr<variables::Variable>(new variables::Variable(name, env != nullptr ? env : "" ));
     } else {
         return variable;
     }
