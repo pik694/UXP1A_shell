@@ -7,6 +7,7 @@
 #include <boost/test/unit_test.hpp>
 #include <shell/tasks/domain/tasks/ChildProcess.hpp>
 #include <shell/tasks/domain/tasks/Pipeline.hpp>
+#include <sys/wait.h>
 
 using namespace shell::tasks;
 
