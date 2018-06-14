@@ -5,10 +5,11 @@
 #ifndef UXP1A_SHELL_PIPELINE_H
 #define UXP1A_SHELL_PIPELINE_H
 
-#include <list>
+#include <vector>
 #include <memory>
 #include "AbstractSyntaxTree.hpp"
 #include "Command.h"
+#include "CommandList.h"
 
 namespace shell::parser::structures
 {
@@ -18,10 +19,11 @@ namespace shell::parser::structures
         explicit Pipeline() = default;
         virtual ~Pipeline() = default;
 
-        std::list< std::unique_ptr< Command > > &getCommands();
-        void addCommand( std::unique_ptr< Command > & );
+        std::vector< std::unique_ptr< CommandList > > &getCommandsList();
+        void addCommandList( std::unique_ptr< CommandList > &command_list );
+
     private:
-        std::list< std::unique_ptr< Command > > commands_;
+        std::vector< std::unique_ptr< CommandList > > commandsList_;
     };
 
 }

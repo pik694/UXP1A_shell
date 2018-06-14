@@ -6,39 +6,51 @@
 
 using namespace shell::parser::structures;
 
-Command::Command()
+Command::Command( const std::string &command ) :
+    word_( command ),
+    isBackground_( false ) { }
+
+std::string Command::getWord()
 {
-    inRedirection_ = nullptr;
-    outRedirection_ = nullptr;
-    errRedirection_ = nullptr;
+    return word_;
 }
 
-Out *Command::getOutRedirection()
+std::vector< std::string > &Command::getArguments()
 {
-    return outRedirection_ != nullptr ? outRedirection_.get() : nullptr;
+    return argumentList_;
 }
 
-Err *Command::getErrRedirection()
+void Command::addArgument( const std::string &argument )
 {
-    return errRedirection_ != nullptr ? errRedirection_.get() : nullptr;
+    argumentList_.push_back( argument );
 }
 
-InRedirection *Command::getInRedirection()
+std::vector< std::unique_ptr< Redirection > > &Command::getRedirections()
 {
-    return inRedirection_ != nullptr ? inRedirection_.get() : nullptr;
+    return redirectionList_;
 }
 
-void Command::addInRedirection( std::unique_ptr< InRedirection > & ptr )
+void Command::addRedirection( std::unique_ptr< Redirection > &redirection )
 {
-    inRedirection_ = std::move( ptr );
+    redirectionList_.push_back( std::move( redirection ));
 }
 
-void Command::addOutRedirection( std::unique_ptr< OutRedirection > & ptr )
+std::unique_ptr< HereDocument > &Command::getHereDocument()
 {
-    outRedirection_ =  std::move( ptr );
+    return hereDocument_;
 }
 
-void Command::addErrRedirection( std::unique_ptr< ErrRedirection > & ptr )
+void Command::addHereDocument( std::unique_ptr< HereDocument > &here_document )
 {
-    errRedirection_ = std::move( ptr );
+    hereDocument_ = std::move( here_document );
+}
+
+bool Command::getIsBackground()
+{
+    return isBackground_;
+}
+
+void Command::setBackgroundExecution()
+{
+    isBackground_ = true;
 }

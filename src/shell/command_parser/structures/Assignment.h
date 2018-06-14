@@ -15,8 +15,13 @@ namespace shell::parser::structures
         explicit Assignment( const std::string &variable );
         virtual ~Assignment() = default;
 
+        std::string getVariable();
+        std::string getValue();
+        void setValue( const std::string &value );
+
     private:
         std::string variable_;
+        std::string value_;
     };
 }
 

@@ -12,26 +12,38 @@
 #include "InRedirection.h"
 #include "OutRedirection.h"
 #include "ErrRedirection.h"
+#include "HereDocument.h"
+#include <vector>
+#include <memory>
 
 namespace shell::parser::structures
 {
     class Command
     {
     public:
-        explicit Command();
+        explicit Command( const std::string &command );
         virtual ~Command() = default;
 
-        Out *getOutRedirection();
-        Err *getErrRedirection();
-        InRedirection *getInRedirection();
+        std::string getWord();
 
-        void addInRedirection( std::unique_ptr< InRedirection > & );
-        void addOutRedirection( std::unique_ptr< OutRedirection > & );
-        void addErrRedirection( std::unique_ptr< ErrRedirection > & );
-    private:
-        std::unique_ptr< Out > outRedirection_;
-        std::unique_ptr< Err > errRedirection_;
-        std::unique_ptr< InRedirection > inRedirection_;
+        std::vector< std::string > &getArguments();
+        void addArgument( const std::string &argument );
+
+        std::vector< std::unique_ptr< Redirection > > &getRedirections();
+        void addRedirection( std::unique_ptr< Redirection > &redirection );
+
+        std::unique_ptr< HereDocument > &getHereDocument();
+        void addHereDocument( std::unique_ptr< HereDocument > &here_document );
+
+        bool getIsBackground();
+        void setBackgroundExecution();
+
+     private:
+        bool isBackground_ ;
+        std::string word_;
+        std::vector< std::string > argumentList_;
+        std::vector< std::unique_ptr< Redirection > > redirectionList_;
+        std::unique_ptr< HereDocument > hereDocument_;
     };
 }
 #endif //UXP1A_SHELL_PROGRAMEXECUTION_H

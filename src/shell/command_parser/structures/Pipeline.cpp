@@ -6,12 +6,12 @@
 
 using namespace shell::parser::structures;
 
-std::list< std::unique_ptr< Command > > &Pipeline::getCommands()
+std::vector< std::unique_ptr< CommandList > > &Pipeline::getCommandsList()
 {
-    return commands_;
+    return commandsList_;
 }
 
-void Pipeline::addCommand( std::unique_ptr< Command > &program )
+void Pipeline::addCommandList( std::unique_ptr< CommandList > &command_list )
 {
-    commands_.push_back( std::move( program ) );
+    commandsList_.push_back( std::move( command_list ) );
 }
