@@ -36,8 +36,23 @@ std::unique_ptr< structures::Command > Parser::parseCommand()
 {
     auto command = std::make_unique< structures::Command >( getExpectedToken( { TokenType::Command } ).getValue() );
 
-    while( peekNextToken() == TokenType::Command )
-        command->addArgument( getExpectedToken( { TokenType::Command } ).getValue() );
+    while( peekNextToken() == TokenType::Command || peekNextToken() == TokenType::DoubleQuoteArg ){
+        std::string variable_value = getExpectedToken( { TokenType::Command, TokenType::DoubleQuoteArg } ).getValue() ;
+        while( true )
+        {
+            std::size_t found = variable_value.find( '$' );
+            if( found == std::string::npos )
+                break;
+
+            std::string variable, new_value;
+            for( size_t i = found+1; i < variable_value.length() && !isspace( variable_value[ i ] ); ++i )
+                variable += variable_value[ i ];
+
+            new_value = shell::ui::Controller::getInstance().getVariable( variable )->getStringValues();
+            variable_value = std::regex_replace( variable_value, std::regex( "\\$" + variable ), new_value );
+        }
+        command->addArgument( variable_value );
+    }
 
     if( peekNextToken() == TokenType::Background )
     {
