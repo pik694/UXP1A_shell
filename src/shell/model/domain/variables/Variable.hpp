@@ -7,18 +7,23 @@
 
 #include <string>
 #include <list>
+#include <boost/algorithm/string.hpp>
 
 namespace shell::model::variables {
 
     class Variable {
     public:
-        //TODO: getters and setters
+        Variable();
+        Variable(const std::string &name_, const std::string values);
+        const std::string &getName_() const;
+        const std::list<std::string> &getValues_() const;
+        const std::string &getStringValues() const;
+        void setValues_(const std::string &values);
 
     private:
-        const std::string name_;
-
-        // TODO: we get a list of values separated by a separator (ex. VARIABLE=value1:value2:value3)
+        std::string name_;
         std::list<std::string> values_;
+        std::string valuesStr_;
     };
 }
 

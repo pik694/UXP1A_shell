@@ -1,16 +1,10 @@
-#include <iostream>
 #include <sys/stat.h>
 #include <fstream>
 #include <fcntl.h>
 #include <zconf.h>
-
-
-//TODO: conrtoller talks to command parser, parser parses the command then controller forwards the parsed command to TaskFacade which uses TaskFactory inside
-
+#include <memory>
+#include <shell/ui/Controller.hpp>
 
 int main(int argc, char** argv) {
-
-
-    //TODO: forwards the control to the Controller
-
+    shell::ui::Controller::getInstance().start();
 }

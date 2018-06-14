@@ -11,9 +11,7 @@
 namespace shell::model::variables {
     class VariablesFactory {
     public:
-        //TODO: overload methods by using different parameters' lists
-        //TODO: at this point I cannot foresee parameters' lists
-        std::unique_ptr<Variable> produce();
+        static std::unique_ptr<Variable> produce(const std::string &name, const std::string &values);
     };
 }
 

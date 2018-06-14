@@ -8,6 +8,7 @@
 
 #include <string>
 #include <boost/optional.hpp>
+#include <iostream>
 
 namespace shell::ui {
     class UserInterface {
@@ -15,9 +16,9 @@ namespace shell::ui {
 
         boost::optional<std::string> getNextCommand();
 
-        void printError(const std::string&);
-        void printLog(const std::string&);
+        void printError(const std::string& message);
 
+        void printLog(const std::string&);
 
     };
 }
