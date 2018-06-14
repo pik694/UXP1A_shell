@@ -13,6 +13,7 @@
 namespace shell::tasks {
     class TasksFacade {
     public:
+        TasksFacade();
 
         void buildAndAddTask(std::unique_ptr<shell::parser::structures::ast> ast);
 

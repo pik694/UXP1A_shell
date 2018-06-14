@@ -53,6 +53,7 @@ namespace shell::ui {
 
             setsid();
 
+            parser = std::make_unique<shell::parser::Parser>();
             userInterface = std::make_unique<UserInterface>();
             modelFacade =  std::make_unique<shell::model::ModelFacade>();
 

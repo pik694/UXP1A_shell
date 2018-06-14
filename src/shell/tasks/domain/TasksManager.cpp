@@ -146,5 +146,4 @@ boost::optional<std::pair<pid_t, int>> TasksManager::waitForChild(int flags) {
 
     return std::make_pair(child, status);
 
-
 }

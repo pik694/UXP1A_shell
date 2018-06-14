@@ -18,3 +18,5 @@ void TasksFacade::close() {
     manager_.close();
 
 }
+
+TasksFacade::TasksFacade(): manager_(), factory_(manager_) {}
