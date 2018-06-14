@@ -34,9 +34,8 @@ boost::optional<pid_t> PipelinedTasks::run() {
     *writerIt = std::unique_ptr<Task>(new decorators::PipelinedTask(std::move(*writerIt), inPipeline, outPipeline));
 
 
-    for (auto taskIterator = tasks_.begin(); taskIterator != tasks_.end(); ++taskIterator)
-        manager_.addTask(std::move(*taskIterator));
-
+    for (auto& task : tasks_)
+        manager_.addTask(std::move(task));
 
 
  return boost::none;

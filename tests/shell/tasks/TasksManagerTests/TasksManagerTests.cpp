@@ -210,18 +210,19 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
         auto writeTask = std::unique_ptr<Task>(new MockWriteProcessTask("10"));
         auto readTask = std::unique_ptr<Task>(new MockReadTask());
 
-//        auto decoratedWrite = std::unique_ptr<Task>(
-//                new decorators::StandardOutputRedirector(std::move(writeTask), pipeline.getOutDescriptor())
-//        );
+        auto decoratedWrite = std::unique_ptr<Task>(
+                new decorators::StandardOutputRedirector(std::move(writeTask), pipeline.getOutDescriptor())
+        );
 
         auto decoratedRead = std::unique_ptr<Task>(
                 new decorators::StandardInputRedirector(std::move(readTask), pipeline.getInDescriptor())
         );
 
 
-//        decoratedWrite->run();
+        auto pid = decoratedWrite->run();
 
-        writeTask->run();
+        BOOST_CHECK_NE(waitpid(*pid, nullptr, 0), -1);
+
         auto result = decoratedRead->run();
 
         BOOST_CHECK_EQUAL(*result, 10);
@@ -232,111 +233,58 @@ BOOST_AUTO_TEST_SUITE(tasks_manager_test_suite)
 
         Pipeline pipeline;
 
-        auto writeTask = std::unique_ptr<Task>(new MockWriteTask("10"));
-        auto readTask = std::unique_ptr<Task>(new ChildProcess("cat", {"/tmp/uxp1a_shell/pipe0"}));
+        auto writeTask = std::unique_ptr<Task>(new ChildProcess("echo", {"10"}));
+        auto readTask = std::unique_ptr<Task>(new MockReadTask());
 
         auto decoratedWrite = std::unique_ptr<Task>(
                 new decorators::StandardOutputRedirector(std::move(writeTask), pipeline.getOutDescriptor())
         );
 
+        auto decoratedRead = std::unique_ptr<Task>(
+                new decorators::StandardInputRedirector(std::move(readTask), pipeline.getInDescriptor())
+        );
 
-        decoratedWrite->run();
-        readTask->run();
+        auto pid = decoratedWrite->run();
+
+        BOOST_CHECK_NE(waitpid(*pid, nullptr, 0), -1);
+
+        auto result = decoratedRead->run();
+
+        BOOST_CHECK_EQUAL(*result, 10);
 
     }
 
-//
-//    BOOST_AUTO_TEST_CASE(mock_pipeline) {
-//
-//        TasksManager manager;
-//        TasksManagerTester tester(manager);
-//
-//        auto readTaskPtr = new MockReadTask();
-//
-//        auto writeTask = std::unique_ptr<Task>(new MockWriteTask("10"));
-//        auto readTask = std::unique_ptr<Task>(readTaskPtr);
-//
-//        std::list<std::unique_ptr<Task>> list;
-//        list.emplace_back(std::move(writeTask));
-//        list.emplace_back(std::move(readTask));
-//
-//        auto pipeline = std::unique_ptr<Task>(
-//                new PipelinedTasks(manager, std::move(list))
-//        );
-//
-//        manager.addTask(std::move(pipeline));
-//        manager.close();
-//
-//
-//
-//    }
-//
-//    BOOST_AUTO_TEST_CASE(run_pipeline) {
-//
-//        TasksManager manager;
-//        TasksManagerTester tester(manager);
-//
-//        auto echoTask = std::unique_ptr<Task>(new ChildProcess("echo", {"Sample Text\nHello World"}));
-//        auto grepTask = std::unique_ptr<Task>(new ChildProcess("cat", {}));
-////        auto grepTask = std::unique_ptr<Task>(new ChildProcess("cat", {"Hello"}));
-//
-//
-//        std::list<std::unique_ptr<Task>> list;
-//        list.emplace_back(std::move(echoTask));
-//        list.emplace_back(std::move(grepTask));
-//
-//        auto pipeline = std::unique_ptr<Task>(
-//                new PipelinedTasks(manager, std::move(list))
-//        );
-//
-//        manager.addTask(std::move(pipeline));
-//
-//        manager.close();
-//
-//        BOOST_CHECK_EQUAL(tester.getRunningChildren().empty(), true);
-//    }
-//
-//    BOOST_AUTO_TEST_CASE(playground) {
-//
-//
-//        int inDesc = open("./fifo", O_RDONLY | O_NONBLOCK);
-//        int outDesc = open("./fifo", O_WRONLY | O_NONBLOCK);
-//
-//
-//        int descriptorCopy = dup(STDOUT_FILENO);
-//        dup2(outDesc, STDOUT_FILENO);
-//
-//        std::cout << "Hello" << std::endl;
-//
-////        write(outDesc, "12345\n\0", 7);
-//
-//        dup2(descriptorCopy, STDOUT_FILENO);
-//        close(descriptorCopy);
-//
-//        descriptorCopy = dup(STDIN_FILENO);
-//        dup2(inDesc, STDIN_FILENO);
-//
-//
-////        char str [10];
-////        read(inDesc, str, 7);
-//        std::string str;
-//        std::cin >> str;
-//
-//        dup2(descriptorCopy, STDIN_FILENO);
-//        close(descriptorCopy);
-//
-//        close(inDesc);
-//
-//
-//        BOOST_CHECK_EQUAL(str, "Hello");
-//
-////        auto writeTask = std::unique_ptr<Task>(new MockWriteTask("HelloWorld"));
-////        auto decorated = std::unique_ptr<Task>(
-////                new decorators::StandardOutputRedirector(std::move(writeTask), "./file"));
-////
-////        decorated->run();
-//    }
 
+    BOOST_AUTO_TEST_CASE(run_pipeline) {
+
+        TasksManager manager;
+        TasksManagerTester tester(manager);
+
+        std::string result;
+
+        auto resultReaderPtr =  new MockResultReader(result);
+
+        auto writeTask = std::unique_ptr<Task>(new ChildProcess("echo", {"Hello\nWorld"}));
+        auto readTask = std::unique_ptr<Task>(new ChildProcess("grep", {"d"}));
+        auto resultReader = std::unique_ptr<Task>(resultReaderPtr);
+
+        std::list<std::unique_ptr<Task>> list;
+
+        list.emplace_back(std::move(writeTask));
+        list.emplace_back(std::move(readTask));
+        list.emplace_back(std::move(resultReader));
+
+        auto pipeline = std::unique_ptr<Task>(
+                new PipelinedTasks(manager, std::move(list))
+        );
+
+        manager.addTask(std::move(pipeline));
+        manager.close();
+
+        BOOST_CHECK_EQUAL(result, "World");
+
+    }
+    
 
 BOOST_AUTO_TEST_SUITE_END()
 

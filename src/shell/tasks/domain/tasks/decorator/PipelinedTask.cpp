@@ -23,5 +23,5 @@ shell::tasks::decorators::PipelinedTask::PipelinedTask(std::unique_ptr<shell::ta
 }
 
 bool shell::tasks::decorators::PipelinedTask::isBackgroundTask() {
-    return true;
+    return false;
 }

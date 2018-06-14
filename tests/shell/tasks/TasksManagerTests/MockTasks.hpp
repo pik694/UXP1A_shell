@@ -80,6 +80,21 @@ namespace test::shell::tasks {
 
     };
 
+    class MockResultReader : public Task{
+    public:
+
+
+        MockResultReader(std::string &result_) : result_(result_) {}
+
+        boost::optional<pid_t> run() override {
+            std::cin >> result_;
+            return boost::none;
+        }
+
+    private:
+        std::string& result_;
+    };
+
     class MockWriteTask : public Task {
     public:
 
@@ -96,6 +111,7 @@ namespace test::shell::tasks {
         std::string text_;
     };
 
+
     class MockWriteProcessTask : public Task {
     public:
 
@@ -111,23 +127,9 @@ namespace test::shell::tasks {
 
             if (pid == 0) {
 
-                int outDesc = open("/tmp/uxp1a_shell/pipelines/pipe0", O_WRONLY | O_NONBLOCK);
-
-                if (outDesc == -1)
-                    throw std::system_error(errno, std::system_category());
-
-                int descriptorCopy = dup(STDOUT_FILENO);
-                dup2(outDesc, STDOUT_FILENO);
-
-                std::cout << 10 << std::endl;
-
-                fflush(stdout);
-
-                dup2(descriptorCopy, STDOUT_FILENO);
-                close(descriptorCopy);
+                std::cout << text_ << std::endl;
 
                 exit(0);
-
             }
 
             return pid;
