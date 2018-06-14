@@ -65,6 +65,7 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
 
     BOOST_AUTO_TEST_CASE(build_and_execute_assign_statement_from_ast) {
 
+        TasksManager manager;
 
         using namespace shell::parser::structures;
 
@@ -73,7 +74,7 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
 
         auto assignment = std::unique_ptr<shell::parser::structures::AbstractSyntaxTree>(ptr);
 
-        TasksFactory factory;
+        TasksFactory factory(manager);
 
         auto task = factory.build(std::move(assignment));
 
@@ -83,6 +84,8 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
         BOOST_CHECK_EQUAL(var->getName_(), "TEST_VAR");
         BOOST_CHECK_EQUAL(var->getStringValues(), "TEST_VALUE");
 
+
+        manager.close();
     }
 
 

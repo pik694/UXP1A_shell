@@ -97,7 +97,7 @@ bool TasksManager::waitForShouldFinish() {
 
         std::unique_lock<std::mutex> lock(shouldFinishMutex_);
 
-        shouldFinish = shouldFinishCV_.wait_for(lock, 500ms, [this]() {
+        shouldFinish = shouldFinishCV_.wait_for(lock, 100ms, [this]() {
             return shouldFinish_;
         });
     }
