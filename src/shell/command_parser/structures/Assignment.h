@@ -6,6 +6,7 @@
 #define UXP1A_SHELL_ASSIGNMENT_H
 
 #include "AbstractSyntaxTree.hpp"
+#include <string>
 
 namespace shell::parser::structures
 {

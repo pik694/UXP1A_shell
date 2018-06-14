@@ -7,7 +7,10 @@
 #include <boost/test/unit_test.hpp>
 #include <shell/tasks/domain/tasks/ChildProcess.hpp>
 #include <shell/tasks/domain/tasks/Pipeline.hpp>
-#include <sys/wait.h>
+#include <shell/command_parser/structures/Assignment.h>
+#include <shell/tasks/domain/TasksFactory.hpp>
+#include <shell/tasks/domain/tasks/AssignVariableTask.hpp>
+#include <shell/ui/Controller.hpp>
 
 using namespace shell::tasks;
 
@@ -57,6 +60,28 @@ BOOST_AUTO_TEST_SUITE(task_test_suite)
 
         BOOST_CHECK_EQUAL(access("/tmp/uxp1a_shell/pipelines/pipe0", F_OK), -1);
 
+
+    }
+
+    BOOST_AUTO_TEST_CASE(build_and_execute_assign_statement_from_ast) {
+
+
+        using namespace shell::parser::structures;
+
+        auto ptr = new Assignment("TEST_VAR");
+        ptr->setValue("TEST_VALUE");
+
+        auto assignment = std::unique_ptr<shell::parser::structures::AbstractSyntaxTree>(ptr);
+
+        TasksFactory factory;
+
+        auto task = factory.build(std::move(assignment));
+
+        task->run();
+        auto var = shell::ui::Controller::getInstance().getVariable("TEST_VAR");
+
+        BOOST_CHECK_EQUAL(var->getName_(), "TEST_VAR");
+        BOOST_CHECK_EQUAL(var->getStringValues(), "TEST_VALUE");
 
     }
 
