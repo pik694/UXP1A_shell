@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <shell/model/ModelFacade.hpp>
+#include <shell/ui/Controller.hpp>
 #include "TasksManager.hpp"
 
 using namespace shell::tasks;
@@ -111,7 +112,6 @@ bool TasksManager::waitForShouldFinish() {
 void TasksManager::pollExitedChildren(int flags) {
 
 
-    //TODO: set ? variable
 
     boost::optional<std::pair<pid_t, int>> result;
     while ((result = waitForChild(flags))) {
@@ -124,8 +124,7 @@ void TasksManager::pollExitedChildren(int flags) {
             std::lock_guard guard(runningChildrenMutex_);
             runningChildren_.erase(result->first);
         }
-
-        //TODO: set "?" variable
+        shell::ui::Controller::getInstance().setVariable("?", std::to_string(result->second >> 8));
     }
 }
 

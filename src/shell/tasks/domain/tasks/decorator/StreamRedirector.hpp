@@ -13,7 +13,7 @@ namespace shell::tasks::decorators {
 
         StreamRedirector(std::unique_ptr<Task> decoratedTask, int descriptor);
 
-        StreamRedirector(std::unique_ptr<Task> decoratedTask,const std::string& filename, int flags);
+        StreamRedirector(std::unique_ptr<Task> decoratedTask, const std::string& filename, int flags);
 
         ~StreamRedirector() override;
 

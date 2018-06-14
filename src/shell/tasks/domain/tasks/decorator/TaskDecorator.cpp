@@ -6,8 +6,14 @@
 
 using namespace shell::tasks::decorators;
 
+
+
 boost::optional<pid_t> TaskDecorator::run() {
     return decoratedTask_->run();
+}
+
+bool TaskDecorator::isBackgroundTask() {
+    return decoratedTask_->isBackgroundTask();
 }
 
 TaskDecorator::~TaskDecorator() {}

@@ -32,7 +32,9 @@ boost::optional<pid_t> StreamRedirector::run() {
     auto result = TaskDecorator::run();
 
     dup2(descriptorCopy, getStream());
+
     close(descriptorCopy);
+    close(descriptor_);
 
     return result;
 

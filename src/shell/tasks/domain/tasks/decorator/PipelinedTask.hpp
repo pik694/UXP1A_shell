@@ -13,7 +13,9 @@ namespace shell::tasks::decorators {
     public:
         PipelinedTask(std::unique_ptr<Task> decoratedTask, const std::shared_ptr<Pipeline> &in,
                       const std::shared_ptr<Pipeline> &out);
-        
+
+        bool isBackgroundTask() override;
+
     private:
         std::shared_ptr<Pipeline> in_;
         std::shared_ptr<Pipeline> out_;

@@ -14,9 +14,13 @@ namespace shell::tasks {
     class PipelinedTasks : public Task {
     public:
 
+        PipelinedTasks(TasksManager &manager, std::list<std::unique_ptr<Task>> tasks);
+
+        boost::optional<pid_t> run() override;
+
     private:
-//        TasksManager& manager_;
-//        std::list<std::unique_ptr<Task>>
+        TasksManager& manager_;
+        std::list<std::unique_ptr<Task>> tasks_;
     };
 }
 

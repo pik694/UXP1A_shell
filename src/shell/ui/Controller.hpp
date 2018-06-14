@@ -50,7 +50,13 @@ namespace shell::ui {
     private:
         Controller()
         {
+
             setsid();
+
+            userInterface = std::make_unique<UserInterface>();
+            modelFacade =  std::make_unique<shell::model::ModelFacade>();
+
+
         }
 
         static Controller *instance;

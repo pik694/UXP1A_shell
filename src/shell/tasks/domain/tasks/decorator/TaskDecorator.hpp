@@ -16,6 +16,8 @@ namespace shell::tasks::decorators {
 
         boost::optional<pid_t> run() override;
 
+        bool isBackgroundTask() override;
+
         ~TaskDecorator() override = 0;
 
     protected:
